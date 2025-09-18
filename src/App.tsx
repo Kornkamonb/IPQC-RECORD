@@ -13,7 +13,9 @@ import {
   createTheme,
 } from "@mui/material/styles";
 // Lazy load components
-const Home = React.lazy(() => import("@/pages/Homepage/Homepage"));
+const PKRInspectionRecord = React.lazy(
+  () => import("@/pages/PKRInspectionRecord/main/main")
+);
 
 function App() {
   const [themeColors, setThemeColors] = useState<any>({});
@@ -81,17 +83,20 @@ function App() {
         <BrowserRouter>
           <Suspense fallback={<Loading />}>
             <Routes>
-              <Route path="/template-typescript" element={<Layout />}>
+              <Route path="/smart-pkr-inspection-record" element={<Layout />}>
                 {/* Public Routes */}
                 <Route
                   index
                   element={
-                    <Navigate to="/template-typescript/homepage" replace />
+                    <Navigate
+                      to="/smart-pkr-inspection-record/record"
+                      replace
+                    />
                   }
                 />
                 <Route
-                  path="/template-typescript/homepage"
-                  element={<Home />}
+                  path="/smart-pkr-inspection-record/record"
+                  element={<PKRInspectionRecord />}
                 />
               </Route>
             </Routes>

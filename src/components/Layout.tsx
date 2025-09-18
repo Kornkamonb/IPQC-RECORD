@@ -11,8 +11,8 @@ const Layout = () => {
         <Navbar />
       </header> */}
       <header>
-        {location.pathname === "/template-typescript/login" ||
-        location.pathname === "/template-typescript/register" ? null : (
+        {location.pathname === "/smart-pkr-inspection-record/login" ||
+        location.pathname === "/smart-pkr-inspection-record/register" ? null : (
           <Navbar />
         )}
       </header>

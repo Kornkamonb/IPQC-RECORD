@@ -15,10 +15,13 @@ interface Link {
 // Component ที่ใช้กำหนดข้อมูล Link
 export const Link = () => {
   const Grp1: Link = {
-    Title: "TITLE",
+    Title: "PKR Inspection Record",
     Iconsmain: Iconsmain, // ใช้การ import รูปภาพที่ถูกต้อง
     SubPath: [
-      { path: "/template-typescript/homepage", label: "Template Typescript" },
+      {
+        path: "/smart-pkr-inspection-record/record",
+        label: "Inspection Record",
+      },
     ],
   };
 
