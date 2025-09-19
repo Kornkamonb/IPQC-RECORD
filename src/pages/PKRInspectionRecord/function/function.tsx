@@ -6,13 +6,14 @@ export const HandleFunction = () => {
   const [openHeaderDialog, setOpenHeaderDialog] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<[]>([]);
+  const [openRepairDialog, setOpenRepairDialog] = useState<boolean>(false);
+  const [selectedRow, setSelectedRow] = useState<any>({}); // เปลี่ยนจาก [] เป็น {}
 
   const {
     handleUpdateEditData,
     handleUpdateFinishTime,
     fetchLotForFilter,
-    updateRepairData,
+    handleUpdateRepairData,
   } = Use_feature();
 
   /** กดปุ่ม Create Header */
@@ -46,18 +47,19 @@ export const HandleFunction = () => {
 
   const handleClickEdit = (rowData: any) => {
     console.log("Edit row:", rowData);
-
     setSelectedRow(rowData);
     setOpenEditDialog(true);
   };
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
+    setSelectedRow({}); // รีเซ็ต selectedRow เมื่อปิด dialog
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = async (editData: any) => {
     try {
-      await handleUpdateEditData(selectedRow); // 👈 เรียกใช้ฟังก์ชันที่มาจาก use_feature
+      console.log("HandleFunction handleSaveEdit - received data:", editData);
+      await handleUpdateEditData(editData || selectedRow);
       Swal.fire({
         icon: "success",
         title: "Edit Saved",
@@ -65,6 +67,7 @@ export const HandleFunction = () => {
         showConfirmButton: false,
       });
       setOpenEditDialog(false);
+      setSelectedRow({});
     } catch (err) {
       console.error("Failed to save edit:", err);
       Swal.fire({
@@ -87,13 +90,14 @@ export const HandleFunction = () => {
     }
 
     try {
-      const result = await handleUpdateFinishTime(); // เรียก service
+      const result = await handleUpdateFinishTime();
       Swal.fire({
         icon: "success",
         title: "สำเร็จ",
         text: result.message,
         confirmButtonColor: "#10b981",
       });
+      setOpenConfirmDialog(false);
     } catch (err: any) {
       Swal.fire({
         icon: "error",
@@ -104,21 +108,25 @@ export const HandleFunction = () => {
     }
   };
 
-  const handleClickRepair = async (repairData: any) => {
-    try {
-      const result = await Swal.fire({
-        title: "ยืนยันการซ่อม?",
-        text: "คุณต้องการบันทึกข้อมูลการซ่อมหรือไม่",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "บันทึก",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-      });
+  // แก้ไขฟังก์ชัน handleClickRepair
+  const handleClickRepair = (repairData?: any) => {
+    console.log(
+      "HandleFunction handleClickRepair - received data:",
+      repairData
+    );
 
-      if (result.isConfirmed) {
-        await updateRepairData(repairData);
+    // ถ้าไม่มีข้อมูล repair (กดปุ่ม Repair จาก EditDialog) -> เปิด RepairDialog
+    if (!repairData) {
+      setOpenEditDialog(false);
+      setOpenRepairDialog(true);
+      return;
+    }
+
+    // ถ้ามีข้อมูล repair แล้ว (ส่งมาจาก RepairDialog) -> บันทึก
+    const saveRepair = async () => {
+      try {
+        console.log("Calling handleUpdateRepairData with:", repairData);
+        await handleUpdateRepairData(repairData);
 
         await Swal.fire({
           icon: "success",
@@ -127,32 +135,45 @@ export const HandleFunction = () => {
           timer: 1500,
           showConfirmButton: false,
         });
-      }
-    } catch (error) {
-      console.error("Error while calling updateRepairData:", error);
 
-      await Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถบันทึกข้อมูลการซ่อมได้ กรุณาลองใหม่อีกครั้ง",
-      });
-    }
+        setOpenRepairDialog(false);
+        setSelectedRow({});
+      } catch (error) {
+        console.error("Error while calling handleUpdateRepairData:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถบันทึกข้อมูลการซ่อมได้ กรุณาลองใหม่อีกครั้ง",
+        });
+        setOpenRepairDialog(false);
+      }
+    };
+
+    saveRepair();
+  };
+
+  const handleCloseRepairDialog = () => {
+    setOpenRepairDialog(false);
+    setSelectedRow({});
   };
 
   return {
     openHeaderDialog,
     openConfirmDialog,
+    openEditDialog,
+    openRepairDialog,
+    selectedRow,
     handleClickCreateHeader,
     handleCloseHeaderDialog,
     handleOpenConfirmDialog,
     handleCloseConfirmDialog,
     handleClickEdit,
-    openEditDialog,
     handleCloseEditDialog,
     handleSaveEdit,
-    selectedRow,
     handleConfirmDialog,
-    setOpenConfirmDialog,
     handleClickRepair,
+    handleCloseRepairDialog,
+    setOpenConfirmDialog,
+    setOpenRepairDialog,
   };
 };

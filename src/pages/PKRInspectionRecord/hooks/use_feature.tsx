@@ -195,7 +195,7 @@ export const Use_feature = () => {
     return response.data;
   };
 
-  const updateRepairData = async (data: any) => {
+  const handleUpdateRepairData = async (data: any) => {
     try {
       console.log("Updating repair data...", data);
       // call API ที่คุณต้องการ
@@ -230,6 +230,6 @@ export const Use_feature = () => {
     handleUpdateEditData,
     handleUpdateFinishTime,
     fetchLotForFilter,
-    updateRepairData,
+    handleUpdateRepairData,
   };
 };

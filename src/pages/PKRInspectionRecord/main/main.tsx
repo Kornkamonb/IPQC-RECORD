@@ -1,13 +1,14 @@
 import { Use_feature } from "../hooks/use_feature";
 import Table_MUIX from "../components/Table_MUI";
-import MyAutocomplete from "../components/Autocomplete";
+
 import { GridColDef } from "@mui/x-data-grid";
 import DialogCreateHeader from "../components/dialogCreateHeader";
-import { Button, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import { HandleFunction } from "../function/function";
 import DialogEditRecord from "../components/dialogEdit";
 import dayjs from "dayjs";
 import DialogConfirmPassword from "../components/dialogConfirmPassword";
+import DialogRepair from "../components/dialogRepair";
 
 const PKRInspectionRecord = () => {
   const {
@@ -24,6 +25,9 @@ const PKRInspectionRecord = () => {
     handleSaveEdit,
     selectedRow,
     handleConfirm,
+    openRepairDialog,
+    setOpenRepairDialog,
+    handleClickRepair,
   } = HandleFunction();
 
   const {
@@ -335,6 +339,7 @@ const PKRInspectionRecord = () => {
           rowData={selectedRow}
           onClose={handleCloseEditDialog}
           onSave={handleSaveEdit}
+          onRepair={handleClickRepair}
         />
       </Dialog>
 
@@ -345,6 +350,13 @@ const PKRInspectionRecord = () => {
           handleConfirm(password);
           setOpenConfirmDialog(false);
         }}
+      />
+
+      <DialogRepair
+        open={openRepairDialog}
+        rowData={selectedRow}
+        onClose={() => setOpenRepairDialog(false)}
+        onConfirm={(data) => handleClickRepair(data)} // ✅ ตรงนี้เรียก saveRepair()
       />
     </div>
   );

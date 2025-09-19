@@ -1,4 +1,5 @@
 import {
+  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -9,14 +10,14 @@ import {
   Chip,
   Avatar,
 } from "@mui/material";
-import { useState } from "react";
-import { HandleFunction } from "../function/function";
+import { useState, useEffect } from "react";
 
 interface DialogEditRecordProps {
   open: boolean;
   onClose: () => void;
-  rowData: any; // สามารถปรับเป็น type ที่ชัดเจนถ้ารู้โครงสร้าง row
+  rowData: any;
   onSave: (data: any) => void;
+  onRepair: () => void;
 }
 
 const DialogEditRecord = ({
@@ -24,27 +25,45 @@ const DialogEditRecord = ({
   onClose,
   rowData,
   onSave,
+  onRepair,
 }: DialogEditRecordProps) => {
-  const [formData, setFormData] = useState(rowData ?? {});
+  const [formData, setFormData] = useState({});
+
+  // sync formData เมื่อ rowData เปลี่ยน
+  useEffect(() => {
+    if (rowData && Object.keys(rowData).length > 0) {
+      setFormData({ ...rowData });
+    }
+  }, [rowData]);
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = () => {
+    console.log("DialogEditRecord handleSave - sending data:", formData);
     onSave(formData);
     onClose();
   };
 
-  const { handleClickRepair } = HandleFunction();
+  const handleRepair = () => {
+    console.log("DialogEditRecord handleRepair - current formData:", formData);
+    onRepair();
+  };
 
   return (
-    <DialogContent
-      sx={{
-        p: 0,
-        maxWidth: 750,
-        borderRadius: 4,
-        overflow: "hidden",
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      PaperProps={{
+        sx: {
+          borderRadius: 5,
+          overflow: "hidden",
+          maxWidth: 750,
+          boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+        },
       }}
     >
       <DialogTitle
@@ -93,9 +112,7 @@ const DialogEditRecord = ({
           Edit Record
         </Box>
         <button
-          onClick={async () => {
-            handleClickRepair;
-          }}
+          onClick={handleRepair}
           className="
             relative z-10
             inline-flex 
@@ -275,7 +292,11 @@ const DialogEditRecord = ({
                 }
                 type="number"
                 value={formData[field] ?? ""}
-                onChange={(e) => handleChange(field, Number(e.target.value))}
+                onChange={(e) => {
+                  const value =
+                    e.target.value === "" ? 0 : Number(e.target.value);
+                  handleChange(field, value);
+                }}
                 fullWidth
                 variant="outlined"
                 sx={{
@@ -310,9 +331,11 @@ const DialogEditRecord = ({
               }
               type="number"
               value={formData.others_rej ?? ""}
-              onChange={(e) =>
-                handleChange("others_rej", Number(e.target.value))
-              }
+              onChange={(e) => {
+                const value =
+                  e.target.value === "" ? 0 : Number(e.target.value);
+                handleChange("others_rej", value);
+              }}
               fullWidth
               variant="outlined"
               sx={{
@@ -395,7 +418,7 @@ const DialogEditRecord = ({
           💾 Save Changes
         </Button>
       </DialogActions>
-    </DialogContent>
+    </Dialog>
   );
 };
 
