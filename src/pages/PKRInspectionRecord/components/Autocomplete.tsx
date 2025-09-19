@@ -1,5 +1,6 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { useMemo } from "react";
 
 interface MyAutocompleteProps {
   modalData: any[];
@@ -15,10 +16,10 @@ const removeDuplicates = (data: any, key: any) => {
   const uniqueSet = new Set();
   return data.filter((item: any) => {
     if (uniqueSet.has(item[key])) {
-      return false; // ข้ามค่าที่ซ้ำ
+      return false;
     }
     uniqueSet.add(item[key]);
-    return true; // เก็บค่าแรกที่ไม่ซ้ำ
+    return true;
   });
 };
 
@@ -30,18 +31,27 @@ const MyAutocomplete = ({
   label,
   disabled,
 }: MyAutocompleteProps) => {
-  const uniqueOptions = removeDuplicates(modalData, uniqueKey);
-  uniqueOptions.unshift({ [uniqueKey]: "ALL" });
+  const sortedUniqueOptions = useMemo(() => {
+    const uniqueOptions = removeDuplicates(modalData, uniqueKey);
+    uniqueOptions.unshift({ [uniqueKey]: "ALL" });
+
+    // Sort by the first character (same as groupBy criteria)
+    return uniqueOptions.sort((a, b) =>
+      a[uniqueKey].charAt(0).localeCompare(b[uniqueKey].charAt(0))
+    );
+  }, [modalData, uniqueKey]);
+
   return (
     <Autocomplete
       size="small"
       disabled={disabled}
-      options={uniqueOptions}
+      options={sortedUniqueOptions}
       getOptionLabel={(option) => option[uniqueKey]}
       groupBy={(option) => option[uniqueKey].charAt(0)}
       value={
-        uniqueOptions.find((item: any) => item[uniqueKey] === selectValue) ||
-        null
+        sortedUniqueOptions.find(
+          (item: any) => item[uniqueKey] === selectValue
+        ) || null
       }
       onChange={(event, newValue) => {
         console.log(event);

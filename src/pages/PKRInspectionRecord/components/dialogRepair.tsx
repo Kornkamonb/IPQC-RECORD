@@ -10,22 +10,26 @@ import {
   Avatar,
 } from "@mui/material";
 import { useState } from "react";
-import { HandleFunction } from "../function/function";
 
-interface DialogEditRecordProps {
+interface DialogRepairProps {
   open: boolean;
   onClose: () => void;
   rowData: any; // สามารถปรับเป็น type ที่ชัดเจนถ้ารู้โครงสร้าง row
   onSave: (data: any) => void;
 }
 
-const DialogEditRecord = ({
+const DialogRepair = ({
   open,
   onClose,
   rowData,
   onSave,
-}: DialogEditRecordProps) => {
+}: DialogRepairProps) => {
   const [formData, setFormData] = useState(rowData ?? {});
+
+  // อัพเดตเมื่อ rowData เปลี่ยน
+  // ถ้าไม่ใส่ useEffect เวลาเลือก row ใหม่ dialog จะยังโชว์ค่าเก่า
+  // สามารถใช้ useEffect อัพเดต state ได้:
+  // useEffect(() => { setFormData(rowData ?? {}); }, [rowData]);
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
@@ -35,8 +39,6 @@ const DialogEditRecord = ({
     onSave(formData);
     onClose();
   };
-
-  const { handleClickRepair } = HandleFunction();
 
   return (
     <DialogContent
@@ -92,34 +94,6 @@ const DialogEditRecord = ({
           </Avatar>
           Edit Record
         </Box>
-        <button
-          onClick={async () => {
-            handleClickRepair;
-          }}
-          className="
-            relative z-10
-            inline-flex 
-            items-center 
-            px-4 py-2
-            bg-white/20 
-            text-white
-            text-sm 
-            font-semibold
-            rounded-xl
-            backdrop-blur-sm
-            border border-white/30                 
-            cursor-pointer
-            shadow-lg 
-            transition-all 
-            duration-300 
-            hover:bg-white/30 
-            hover:shadow-xl
-            hover:scale-105
-            active:scale-95
-          "
-        >
-          🔧 Repair
-        </button>
       </DialogTitle>
 
       <DialogContent
@@ -399,4 +373,4 @@ const DialogEditRecord = ({
   );
 };
 
-export default DialogEditRecord;
+export default DialogRepair;

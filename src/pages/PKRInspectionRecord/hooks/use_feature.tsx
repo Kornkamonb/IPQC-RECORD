@@ -3,13 +3,66 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
+export interface LotDetail {
+  id: string;
+  lot: string;
+  product_name: string;
+  proc_disp: string;
+}
+
 export const Use_feature = () => {
   const [lotDetailLoading, setLotDetailLoading] = useState<boolean>(false);
   const [MainTableLoading, setMainTableLoading] = useState<boolean>(false);
-  const [selectedLot, setSelectedLot] = useState<string>("ALL");
+  const [selectedLot, setSelectedLot] = useState<string>("");
   const [Error, setError] = useState<boolean>(false);
-  const [lotDetail, setLotDetail] = useState<[]>([]);
+  const [lotDetail, setLotDetail] = useState<LotDetail | null>(null);
+  const [lotFilter, setLotFilter] = useState<LotDetail[]>([]);
   const [dataMainTable, setDataMainTable] = useState<[]>([]);
+
+  const fetchLotForFilter = async () => {
+    const url = `${
+      import.meta.env.VITE_IP_API_NEST
+    }/smart-pkr-inspection-record/inspection-joblist/get-all-detail`;
+    const params = {};
+
+    try {
+      setLotDetailLoading(true);
+      const response = await axios.get(url, { params });
+
+      if (response.status === 200) {
+        if (response.data.status === "OK") {
+          if (
+            Array.isArray(response.data.data) &&
+            response.data.data.length > 0
+          ) {
+            const lotArray = response.data.data.map((item: any) => ({
+              lot: item.lot,
+              ...item,
+            }));
+            setLotFilter(lotArray);
+          } else {
+            setLotFilter([]);
+            Swal.fire({
+              icon: "info",
+              title: "ไม่มีข้อมูล",
+              text: "ไม่พบข้อมูล Lot ที่เลือก",
+            });
+          }
+        }
+      }
+    } catch (err: any) {
+      console.error("Lot detail fetch error:", err);
+      setError(err.message || "Something went wrong");
+      Swal.fire({
+        title: "Error!",
+        text: err.message || "ไม่สามารถดึงข้อมูลได้",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setLotDetailLoading(false);
+    }
+  };
 
   const fetchLotDetail = async () => {
     const url = `${
@@ -27,14 +80,9 @@ export const Use_feature = () => {
             Array.isArray(response.data.data) &&
             response.data.data.length > 0
           ) {
-            // ✅ map เฉพาะ lot เพื่อใช้กับ MyAutocomplete
-            const lotArray = response.data.data.map((item: any) => ({
-              posm_item_code: item.lot, // ให้ key ชื่อเดียวกับ uniqueKey
-              ...item, // เผื่อคุณอยากใช้ข้อมูลอื่นในอนาคต
-            }));
-            setLotDetail(lotArray);
+            setLotDetail(response.data.data[0]); // ✅ เก็บ object เดียว
           } else {
-            setLotDetail([]);
+            setLotDetail(null);
             Swal.fire({
               icon: "info",
               title: "ไม่มีข้อมูล",
@@ -133,8 +181,33 @@ export const Use_feature = () => {
     }
   };
 
+  const handleUpdateFinishTime = async () => {
+    const url = `${import.meta.env.VITE_IP_API_NEST}/your/api/endpoint`;
+
+    const response = await axios.post(url, {
+      data: { foo: "bar" },
+    });
+
+    if (response.status !== 200) {
+      console.error();
+    }
+
+    return response.data;
+  };
+
+  const updateRepairData = async (data: any) => {
+    try {
+      console.log("Updating repair data...", data);
+      // call API ที่คุณต้องการ
+      // await axios.post("/api/update-repair", data);
+    } catch (err) {
+      console.error("Failed to update repair data", err);
+    }
+  };
+
   useEffect(() => {
     fetchMainTableData();
+    fetchLotForFilter();
   }, []);
 
   useEffect(() => {
@@ -149,9 +222,14 @@ export const Use_feature = () => {
 
     lotDetail,
     setLotDetail,
+    lotFilter,
 
     dataMainTable,
     setDataMainTable,
     MainTableLoading,
+    handleUpdateEditData,
+    handleUpdateFinishTime,
+    fetchLotForFilter,
+    updateRepairData,
   };
 };

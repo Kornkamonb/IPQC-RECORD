@@ -8,27 +8,36 @@ import MyAutocomplete from "../components/Autocomplete";
 import { Use_feature } from "../hooks/use_feature";
 
 const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
-  const {
-    selectedLot,
-    setSelectedLot,
-
-    lotDetail,
-  } = Use_feature();
+  const { selectedLot, setSelectedLot, lotDetail, lotFilter } = Use_feature();
 
   return (
     <>
       <DialogTitle>Create New Record</DialogTitle>
       <DialogContent>
         {/* ใส่ฟอร์มหรือ input ที่คุณต้องการ */}
-        <div>
+        <div className="mt-4">
           <MyAutocomplete
-            modalData={lotDetail}
+            modalData={lotFilter}
             selectValue={selectedLot}
             setSelectValue={setSelectedLot}
-            uniqueKey="posm_item_code"
-            label="Item Code"
+            uniqueKey="lot"
+            label="Lot NO"
           />
         </div>
+        {/* แสดงรายละเอียดหลังจากเลือก lot */}
+        {selectedLot && lotDetail && (
+          <div className="mt-4 space-y-2 rounded-lg border p-3 bg-gray-50">
+            <p>
+              <strong>Lot:</strong> {lotDetail.lot}
+            </p>
+            <p>
+              <strong>Product:</strong> {lotDetail.product_name}
+            </p>
+            <p>
+              <strong>Process:</strong> {lotDetail.proc_disp}
+            </p>
+          </div>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="error" variant="outlined">
@@ -41,7 +50,7 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
           color="primary"
           variant="contained"
         >
-          Save
+          Create
         </Button>
       </DialogActions>
     </>
