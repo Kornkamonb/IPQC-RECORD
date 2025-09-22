@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 const titleMap = {
   "/smart-pkr-inspection-record": "PKR Inspection Record",
   "/smart-pkr-inspection-record/record": "PKR Inspection Record",
+  "/smart-pkr-inspection-record/complete-record": "Inspection complete record",
 };
 
 function Title() {

@@ -24,7 +24,7 @@ const PKRInspectionRecord = () => {
     handleCloseEditDialog,
     handleSaveEdit,
     selectedRow,
-    handleConfirm,
+    handleConfirmDialog,
     openRepairDialog,
     setOpenRepairDialog,
     handleClickRepair,
@@ -92,7 +92,7 @@ const PKRInspectionRecord = () => {
     {
       field: "create_date",
       headerName: "Create Date",
-      width: 180,
+      width: 190,
       renderCell: (params: any) => {
         return (
           <div className="text-sm md:text-base overflow-hidden text-ellipsis">
@@ -104,7 +104,7 @@ const PKRInspectionRecord = () => {
     {
       field: "update_date",
       headerName: "Update Date",
-      width: 180,
+      width: 190,
       renderCell: (params: any) => {
         return (
           <div className="text-sm md:text-base overflow-hidden text-ellipsis">
@@ -113,7 +113,7 @@ const PKRInspectionRecord = () => {
         );
       },
     },
-    { field: "lot_no", headerName: "Lot No", width: 150 },
+    { field: "lot_no", headerName: "Lot No", width: 100 },
     { field: "product_name", headerName: "Product Name", width: 180 },
     { field: "process", headerName: "Process", width: 150 },
     {
@@ -126,7 +126,7 @@ const PKRInspectionRecord = () => {
     {
       field: "start_time",
       headerName: "Start Time",
-      width: 180,
+      width: 190,
       renderCell: (params: any) => {
         return (
           <div className="text-sm md:text-base overflow-hidden text-ellipsis">
@@ -170,7 +170,7 @@ const PKRInspectionRecord = () => {
     {
       field: "stop_time",
       headerName: "Stop Time",
-      width: 180,
+      width: 190,
       renderCell: (params: any) => {
         return (
           <div className="text-sm md:text-base overflow-hidden text-ellipsis">
@@ -221,12 +221,13 @@ const PKRInspectionRecord = () => {
       headerName: "Time Finish",
       width: 180,
       renderCell: (params: any) => {
-        // ถ้ามีค่าแล้ว -> return ค่าให้ DataGrid แสดง
         if (params.value) {
-          return <span>{params.value}</span>;
+          return (
+            <div className="text-sm md:text-base overflow-hidden text-ellipsis">
+              {dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}
+            </div>
+          );
         }
-
-        // ถ้าไม่มีค่า -> แสดงปุ่ม Confirm
         return (
           <div className="flex items-center justify-center w-full">
             <button
@@ -347,7 +348,7 @@ const PKRInspectionRecord = () => {
         open={openConfirmDialog}
         onClose={() => setOpenConfirmDialog(false)}
         onConfirm={(password) => {
-          handleConfirm(password);
+          handleConfirmDialog(password);
           setOpenConfirmDialog(false);
         }}
       />

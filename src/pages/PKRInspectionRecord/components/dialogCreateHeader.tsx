@@ -11,8 +11,24 @@ import {
 import MyAutocomplete from "../components/Autocomplete";
 import { Use_feature } from "../hooks/use_feature";
 
-const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
-  const { selectedLot, setSelectedLot, lotDetail, lotFilter } = Use_feature();
+const DialogCreateHeader = ({
+  onClose,
+  fetchMainTableData,
+}: {
+  onClose: () => void;
+  fetchMainTableData: () => Promise<void>;
+}) => {
+  const { selectedLot, setSelectedLot, lotDetail, lotFilter, postCreate } =
+    Use_feature();
+
+  // ✅ handleCreate เรียก postCreate แล้วปิด Dialog
+  const handleCreate = async () => {
+    const result = await postCreate();
+    if (result?.status === "OK") {
+      await fetchMainTableData(); // รีเฟรชตารางหลัก
+      onClose(); // ปิด Dialog
+    }
+  };
 
   return (
     <>
@@ -43,7 +59,6 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
           background: "linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%)",
         }}
       >
-        {/* ใส่ฟอร์มหรือ input ที่คุณต้องการ */}
         <Box
           sx={{
             mt: 2,
@@ -67,14 +82,7 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
         >
           <Typography
             variant="h6"
-            sx={{
-              mb: 2,
-              color: "#1e293b",
-              fontWeight: 700,
-              display: "flex",
-              alignItems: "center",
-              gap: 1.5,
-            }}
+            sx={{ mb: 2, color: "#1e293b", fontWeight: 700 }}
           >
             🏷️ Select Lot
           </Typography>
@@ -88,7 +96,6 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
           />
         </Box>
 
-        {/* แสดงรายละเอียดหลังจากเลือก lot */}
         {selectedLot && lotDetail && (
           <Box
             sx={{
@@ -112,14 +119,7 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
           >
             <Typography
               variant="h6"
-              sx={{
-                mb: 2,
-                color: "#1e293b",
-                fontWeight: 700,
-                display: "flex",
-                alignItems: "center",
-                gap: 1.5,
-              }}
+              sx={{ mb: 2, color: "#1e293b", fontWeight: 700 }}
             >
               📋 Lot Details
             </Typography>
@@ -129,23 +129,9 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
                 <Chip
                   label="Lot Number"
                   size="small"
-                  sx={{
-                    mb: 1,
-                    bgcolor: "#e0e7ff",
-                    color: "#4338ca",
-                    fontWeight: 600,
-                    fontSize: "0.75rem",
-                  }}
+                  sx={{ mb: 1, bgcolor: "#e0e7ff", color: "#4338ca" }}
                 />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "#1e293b",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    mb: 2,
-                  }}
-                >
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
                   {lotDetail.lot}
                 </Typography>
               </Box>
@@ -154,23 +140,9 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
                 <Chip
                   label="Product Name"
                   size="small"
-                  sx={{
-                    mb: 1,
-                    bgcolor: "#dcfce7",
-                    color: "#166534",
-                    fontWeight: 600,
-                    fontSize: "0.75rem",
-                  }}
+                  sx={{ mb: 1, bgcolor: "#dcfce7", color: "#166534" }}
                 />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "#1e293b",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    mb: 2,
-                  }}
-                >
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
                   {lotDetail.product_name}
                 </Typography>
               </Box>
@@ -179,22 +151,9 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
                 <Chip
                   label="Process"
                   size="small"
-                  sx={{
-                    mb: 1,
-                    bgcolor: "#fef3c7",
-                    color: "#92400e",
-                    fontWeight: 600,
-                    fontSize: "0.75rem",
-                  }}
+                  sx={{ mb: 1, bgcolor: "#fef3c7", color: "#92400e" }}
                 />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "#1e293b",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                  }}
-                >
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
                   {lotDetail.proc_disp}
                 </Typography>
               </Box>
@@ -211,48 +170,10 @@ const DialogCreateHeader = ({ onClose }: { onClose: () => void }) => {
           justifyContent: "center",
         }}
       >
-        <Button
-          onClick={onClose}
-          variant="outlined"
-          color="error"
-          sx={{
-            borderRadius: 3,
-            px: 3,
-            py: 1,
-            fontWeight: 600,
-            borderWidth: 2,
-            background: "linear-gradient(145deg, #ffffff 0%, #fef2f2 100%)",
-            "&:hover": {
-              borderColor: "#dc2626",
-              background: "linear-gradient(145deg, #fef2f2 0%, #fee2e2 100%)",
-              transform: "translateY(-2px)",
-              boxShadow: "0 8px 25px rgba(239, 68, 68, 0.25)",
-            },
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-        >
+        <Button onClick={onClose} variant="outlined" color="error">
           ❌ Cancel
         </Button>
-        <Button
-          onClick={() => {
-            /* handle submit */
-          }}
-          variant="contained"
-          sx={{
-            borderRadius: 3,
-            px: 3,
-            py: 1,
-            fontWeight: 600,
-            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-            boxShadow: "0 8px 25px rgba(16, 185, 129, 0.4)",
-            "&:hover": {
-              background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
-              transform: "translateY(-2px)",
-              boxShadow: "0 12px 35px rgba(16, 185, 129, 0.5)",
-            },
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-        >
+        <Button onClick={handleCreate} variant="contained" color="primary">
           ✨ Create
         </Button>
       </DialogActions>

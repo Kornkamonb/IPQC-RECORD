@@ -37,11 +37,13 @@ export const HandleFunction = () => {
     setOpenHeaderDialog(false);
   };
 
-  const handleOpenConfirmDialog = () => {
+  const handleOpenConfirmDialog = (rowData: any) => {
+    setSelectedRow(rowData);
     setOpenConfirmDialog(true);
   };
 
-  const handleCloseConfirmDialog = () => {
+  const handleCloseConfirmDialog = (rowData: any) => {
+    setSelectedRow(rowData);
     setOpenConfirmDialog(false);
   };
 
@@ -53,13 +55,12 @@ export const HandleFunction = () => {
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
-    setSelectedRow({}); // รีเซ็ต selectedRow เมื่อปิด dialog
+    setSelectedRow({});
   };
 
   const handleSaveEdit = async (editData: any) => {
     try {
-      console.log("HandleFunction handleSaveEdit - received data:", editData);
-      await handleUpdateEditData(editData || selectedRow);
+      await handleUpdateEditData(editData);
       Swal.fire({
         icon: "success",
         title: "Edit Saved",
@@ -70,11 +71,6 @@ export const HandleFunction = () => {
       setSelectedRow({});
     } catch (err) {
       console.error("Failed to save edit:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Save Failed",
-        text: "เกิดข้อผิดพลาด กรุณาลองใหม่",
-      });
     }
   };
 
@@ -90,43 +86,39 @@ export const HandleFunction = () => {
     }
 
     try {
-      const result = await handleUpdateFinishTime();
-      Swal.fire({
-        icon: "success",
-        title: "สำเร็จ",
-        text: result.message,
-        confirmButtonColor: "#10b981",
-      });
+      const result = await handleUpdateFinishTime(selectedRow.id); // ✅ ส่ง id
+      if (result?.message) {
+        Swal.fire({
+          icon: "success",
+          title: "สำเร็จ",
+          text: result.message,
+          confirmButtonColor: "#10b981",
+        });
+      }
       setOpenConfirmDialog(false);
-    } catch (err: any) {
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: err?.message || "ไม่สามารถบันทึกข้อมูลได้",
-        confirmButtonColor: "#ef4444",
-      });
+    } catch (err) {
+      console.error("Failed to update finish time:", err);
     }
   };
 
-  // แก้ไขฟังก์ชัน handleClickRepair
   const handleClickRepair = (repairData?: any) => {
     console.log(
       "HandleFunction handleClickRepair - received data:",
       repairData
     );
 
-    // ถ้าไม่มีข้อมูล repair (กดปุ่ม Repair จาก EditDialog) -> เปิด RepairDialog
     if (!repairData) {
       setOpenEditDialog(false);
       setOpenRepairDialog(true);
       return;
     }
 
-    // ถ้ามีข้อมูล repair แล้ว (ส่งมาจาก RepairDialog) -> บันทึก
     const saveRepair = async () => {
       try {
         console.log("Calling handleUpdateRepairData with:", repairData);
-        await handleUpdateRepairData(repairData);
+
+        // ✅ Fixed: Use repairData instead of formData, and correct the function call
+        await handleUpdateRepairData(repairData.id, repairData);
 
         await Swal.fire({
           icon: "success",

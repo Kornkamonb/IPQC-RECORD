@@ -32,6 +32,7 @@ const DialogEditRecord = ({
   // sync formData เมื่อ rowData เปลี่ยน
   useEffect(() => {
     if (rowData && Object.keys(rowData).length > 0) {
+      console.log("📥 Setting formData from rowData:", rowData);
       setFormData({ ...rowData });
     }
   }, [rowData]);
@@ -40,14 +41,40 @@ const DialogEditRecord = ({
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    console.log("DialogEditRecord handleSave - sending data:", formData);
-    onSave(formData);
-    onClose();
+  const handleSave = async () => {
+    console.log("🔥 DialogEditRecord handleSave called");
+    console.log("📋 Current formData:", formData);
+    console.log("🆔 rowData ID:", rowData?.id);
+
+    // ตรวจสอบว่ามี id หรือไม่
+    if (!rowData?.id) {
+      console.error("❌ No ID found in rowData!");
+      alert("ไม่พบ ID ของรายการ");
+      return;
+    }
+
+    // รวม id เข้ากับ formData
+    const dataToSave = {
+      id: rowData.id,
+      ...formData,
+    };
+
+    console.log("💾 Final data being sent:", dataToSave);
+
+    try {
+      // ส่งข้อมูลและรอให้เสร็จก่อน
+      await onSave(dataToSave);
+      // ไม่ต้อง onClose() ที่นี่ เพราะ parent component จะจัดการให้
+    } catch (error) {
+      console.error("❌ Error in handleSave:", error);
+    }
   };
 
   const handleRepair = () => {
-    console.log("DialogEditRecord handleRepair - current formData:", formData);
+    console.log(
+      "🔧 DialogEditRecord handleRepair - current formData:",
+      formData
+    );
     onRepair();
   };
 
@@ -229,6 +256,13 @@ const DialogEditRecord = ({
               </Typography>
             </Box>
           </Box>
+
+          {/* Debug Info - เอาออกได้เมื่อแก้ไขเสร็จแล้ว */}
+          <Box sx={{ mt: 2, p: 1, bgcolor: "#f3f4f6", borderRadius: 1 }}>
+            <Typography variant="caption" color="textSecondary">
+              🐛 Debug: ID = {rowData?.id || "NO ID FOUND"}
+            </Typography>
+          </Box>
         </Box>
 
         {/* Form Fields Card */}
@@ -296,6 +330,7 @@ const DialogEditRecord = ({
                   const value =
                     e.target.value === "" ? 0 : Number(e.target.value);
                   handleChange(field, value);
+                  console.log(`🔄 Changed ${field} to:`, value);
                 }}
                 fullWidth
                 variant="outlined"
@@ -335,6 +370,47 @@ const DialogEditRecord = ({
                 const value =
                   e.target.value === "" ? 0 : Number(e.target.value);
                 handleChange("others_rej", value);
+                console.log("🔄 Changed others_rej to:", value);
+              }}
+              fullWidth
+              variant="outlined"
+              sx={{
+                gridColumn: "span 2",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                  background:
+                    "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
+                  "&:hover fieldset": {
+                    borderColor: "#667eea",
+                    borderWidth: 2,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#667eea",
+                    borderWidth: 2,
+                    boxShadow: "0 0 0 3px rgba(102, 126, 234, 0.1)",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#667eea",
+                  fontWeight: 600,
+                },
+              }}
+            />
+
+            {/* Add Remark field */}
+            <TextField
+              label={
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <span>💬</span>
+                  Remark
+                </Box>
+              }
+              multiline
+              rows={3}
+              value={formData.remark ?? ""}
+              onChange={(e) => {
+                handleChange("remark", e.target.value);
+                console.log("🔄 Changed remark to:", e.target.value);
               }}
               fullWidth
               variant="outlined"
@@ -397,7 +473,10 @@ const DialogEditRecord = ({
           ❌ Cancel
         </Button>
         <Button
-          onClick={handleSave}
+          onClick={() => {
+            console.log("🔘 Save button clicked in DialogEditRecord!");
+            handleSave();
+          }}
           variant="contained"
           size="large"
           sx={{
