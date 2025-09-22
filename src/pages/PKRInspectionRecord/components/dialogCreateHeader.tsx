@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import MyAutocomplete from "../components/Autocomplete";
 import { Use_feature } from "../hooks/use_feature";
+import Swal from "sweetalert2";
 
 const DialogCreateHeader = ({
   onClose,
@@ -21,13 +22,31 @@ const DialogCreateHeader = ({
   const { selectedLot, setSelectedLot, lotDetail, lotFilter, postCreate } =
     Use_feature();
 
-  // ✅ handleCreate เรียก postCreate แล้วปิด Dialog
   const handleCreate = async () => {
     const result = await postCreate();
-    if (result?.status === "OK") {
-      await fetchMainTableData(); // รีเฟรชตารางหลัก
-      onClose(); // ปิด Dialog
+
+    if (!result.success) {
+      Swal.fire({
+        icon: "warning",
+        title: "ไม่สามารถสร้างข้อมูลได้",
+        text: result.message ?? "กรุณาลองใหม่",
+      });
+      return;
     }
+
+    // ✅ ปิด dialog ก่อน
+    onClose();
+
+    // ✅ Refresh table หลังสร้างสำเร็จ
+    await fetchMainTableData();
+
+    // ✅ ค่อยแสดง Swal หลัง dialog ปิด
+    Swal.fire({
+      icon: "success",
+      title: "สร้างข้อมูลสำเร็จ",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   return (

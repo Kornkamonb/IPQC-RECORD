@@ -7,13 +7,18 @@ export const HandleFunction = () => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [openRepairDialog, setOpenRepairDialog] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<any>({}); // เปลี่ยนจาก [] เป็น {}
+  const [selectedRow, setSelectedRow] = useState<any>({});
+  const [openTotalSheetDialog, setOpenTotalSheetDialog] = useState(false);
+  const [openInspectorDialog, setOpenInspectorDialog] = useState(false);
 
   const {
     handleUpdateEditData,
     handleUpdateFinishTime,
     fetchLotForFilter,
     handleUpdateRepairData,
+    UpdateInspectorID,
+    fetchMainTableData,
+    UpdateTotalSheet,
   } = Use_feature();
 
   /** กดปุ่ม Create Header */
@@ -48,7 +53,6 @@ export const HandleFunction = () => {
   };
 
   const handleClickEdit = (rowData: any) => {
-    console.log("Edit row:", rowData);
     setSelectedRow(rowData);
     setOpenEditDialog(true);
   };
@@ -61,12 +65,6 @@ export const HandleFunction = () => {
   const handleSaveEdit = async (editData: any) => {
     try {
       await handleUpdateEditData(editData);
-      Swal.fire({
-        icon: "success",
-        title: "Edit Saved",
-        timer: 1500,
-        showConfirmButton: false,
-      });
       setOpenEditDialog(false);
       setSelectedRow({});
     } catch (err) {
@@ -80,21 +78,12 @@ export const HandleFunction = () => {
         icon: "error",
         title: "รหัสผ่านไม่ถูกต้อง",
         text: "กรุณาลองอีกครั้ง",
-        confirmButtonColor: "#ef4444",
       });
       return;
     }
 
     try {
-      const result = await handleUpdateFinishTime(selectedRow.id); // ✅ ส่ง id
-      if (result?.message) {
-        Swal.fire({
-          icon: "success",
-          title: "สำเร็จ",
-          text: result.message,
-          confirmButtonColor: "#10b981",
-        });
-      }
+      await handleUpdateFinishTime(selectedRow.id, selectedRow); // ✅ จะรอจน refresh เสร็จ
       setOpenConfirmDialog(false);
     } catch (err) {
       console.error("Failed to update finish time:", err);
@@ -115,38 +104,51 @@ export const HandleFunction = () => {
 
     const saveRepair = async () => {
       try {
-        console.log("Calling handleUpdateRepairData with:", repairData);
-
-        // ✅ Fixed: Use repairData instead of formData, and correct the function call
-        await handleUpdateRepairData(repairData.id, repairData);
-
-        await Swal.fire({
-          icon: "success",
-          title: "บันทึกสำเร็จ",
-          text: "ข้อมูลการซ่อมถูกอัปเดตเรียบร้อยแล้ว",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
+        await handleUpdateRepairData(repairData.id, repairData); // ✅ จะรอจน refresh เสร็จ
         setOpenRepairDialog(false);
         setSelectedRow({});
       } catch (error) {
         console.error("Error while calling handleUpdateRepairData:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "เกิดข้อผิดพลาด",
-          text: "ไม่สามารถบันทึกข้อมูลการซ่อมได้ กรุณาลองใหม่อีกครั้ง",
-        });
-        setOpenRepairDialog(false);
       }
     };
-
     saveRepair();
   };
 
   const handleCloseRepairDialog = () => {
     setOpenRepairDialog(false);
     setSelectedRow({});
+  };
+
+  const handleOpenTotalSheetDialog = (row: any) => {
+    setSelectedRow(row);
+    setOpenTotalSheetDialog(true);
+  };
+
+  const handleOpenInspectorDialog = (row: any) => {
+    setSelectedRow(row);
+    setOpenInspectorDialog(true);
+  };
+
+  const handleSaveTotalSheet = async (value: string) => {
+    if (!selectedRow?.id) return;
+
+    try {
+      await UpdateTotalSheet(selectedRow.id, value);
+      setOpenTotalSheetDialog(false);
+    } catch (error) {
+      console.error("Update Total Sheet error:", error);
+    }
+  };
+
+  const handleSaveInspectorNames = async (value: string) => {
+    if (!selectedRow?.id) return;
+
+    try {
+      await UpdateInspectorID(selectedRow.id, value);
+      setOpenTotalSheetDialog(false);
+    } catch (error) {
+      console.error("Update Inspector error:", error);
+    }
   };
 
   return {
@@ -167,5 +169,13 @@ export const HandleFunction = () => {
     handleCloseRepairDialog,
     setOpenConfirmDialog,
     setOpenRepairDialog,
+    handleOpenInspectorDialog,
+    handleOpenTotalSheetDialog,
+    openInspectorDialog,
+    openTotalSheetDialog,
+    setOpenTotalSheetDialog,
+    setOpenInspectorDialog,
+    handleSaveTotalSheet,
+    handleSaveInspectorNames,
   };
 };

@@ -143,14 +143,17 @@ export const Use_feature = () => {
     }
   };
 
-  const postCreate = async (): Promise<boolean> => {
+  const postCreate = async (): Promise<{
+    success: boolean;
+    message?: string;
+  }> => {
     if (!lotDetail) {
       Swal.fire({
         icon: "warning",
         title: "กรุณาเลือก Lot ก่อน",
         text: "คุณต้องเลือก Lot เพื่อสร้างข้อมูลใหม่",
       });
-      return false;
+      return { success: false, message: "กรุณาเลือก Lot ก่อน" };
     }
 
     const url = `${
@@ -173,14 +176,18 @@ export const Use_feature = () => {
           timer: 1500,
           showConfirmButton: false,
         });
-        return true;
+        await fetchMainTableData(); // ✅ refresh หลังสำเร็จ
+        return { success: true };
       } else {
         Swal.fire({
           icon: "error",
           title: "สร้างข้อมูลไม่สำเร็จ",
           text: response.data?.message ?? "Unknown error",
         });
-        return false;
+        return {
+          success: false,
+          message: response.data?.message ?? "Unknown error",
+        };
       }
     } catch (error: any) {
       Swal.fire({
@@ -188,12 +195,14 @@ export const Use_feature = () => {
         title: "เกิดข้อผิดพลาด",
         text: error?.message ?? "ไม่สามารถเชื่อมต่อ API ได้",
       });
-      return false;
+      return {
+        success: false,
+        message: error?.message ?? "ไม่สามารถเชื่อมต่อ API ได้",
+      };
     }
   };
 
   const handleUpdateEditData = async (formData: any) => {
-    console.log("Received formData:", formData);
     const url = `${
       import.meta.env.VITE_IP_API_NEST
     }/smart-pkr-inspection-record/inspection-joblist/update-main-record`;
@@ -211,8 +220,6 @@ export const Use_feature = () => {
         remark: formData.remark ?? "",
       };
 
-      console.log("Update Main Record Payload:", payload);
-
       const response = await axios.patch(url, payload);
 
       if (response.status === 200 && response.data.status === "OK") {
@@ -220,6 +227,7 @@ export const Use_feature = () => {
           icon: "success",
           title: "บันทึกข้อมูลสำเร็จ",
         });
+        await fetchMainTableData();
       } else {
         Swal.fire({
           icon: "error",
@@ -228,7 +236,6 @@ export const Use_feature = () => {
         });
       }
     } catch (err: any) {
-      console.error("Update main record error:", err);
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
@@ -237,36 +244,41 @@ export const Use_feature = () => {
     }
   };
 
-  const handleUpdateFinishTime = async (id: string, formData: any) => {
+  const handleUpdateFinishTime = async (
+    id: string,
+    formData: any
+  ): Promise<void> => {
     const url = `${
       import.meta.env.VITE_IP_API_NEST
     }/smart-pkr-inspection-record/inspection-joblist/finish-job`;
 
     try {
       const response = await axios.patch(url, { id });
+
       if (response.status === 200 && response.data.status === "OK") {
-        Swal.fire({
+        await Swal.fire({
           icon: "success",
           title: "อัปเดตเวลาเสร็จสิ้นเรียบร้อย",
         });
+
+        // ✅ เรียก update main record + refresh
         await handleUpdateEditData(formData);
-        return response.data;
+
+        // ✅ ทำให้ฟังก์ชันนี้ return promise ของ fetchMainTableData
+        return await fetchMainTableData();
       } else {
         Swal.fire({
           icon: "error",
           title: "ไม่สำเร็จ",
           text: response.data.message || "ไม่สามารถอัปเดต finish time",
         });
-        return response.data;
       }
     } catch (err: any) {
-      console.error("Update finish time error:", err);
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
         text: err.message || "ไม่สามารถอัปเดต finish time ได้",
       });
-      throw err;
     }
   };
 
@@ -277,7 +289,7 @@ export const Use_feature = () => {
 
     try {
       const payload = {
-        id: id,
+        id,
         bodysmall_ng_pcs: data.bodysmall_ng_pcs ?? 0,
         bodybig_ng_pcs: data.bodybig_ng_pcs ?? 0,
         acf_ng_pcs: data.acf_ng_pcs ?? 0,
@@ -286,8 +298,6 @@ export const Use_feature = () => {
         acf_acc_pcs: data.acf_acc_pcs ?? 0,
       };
 
-      console.log("Updating repair data...", payload);
-
       const response = await axios.patch(url, payload);
 
       if (response.status === 200 && response.data.status === "OK") {
@@ -295,6 +305,7 @@ export const Use_feature = () => {
           icon: "success",
           title: "อัปเดตข้อมูลการซ่อมสำเร็จ",
         });
+        return await fetchMainTableData();
       } else {
         Swal.fire({
           icon: "warning",
@@ -303,12 +314,81 @@ export const Use_feature = () => {
         });
       }
     } catch (err: any) {
-      console.error("Failed to update repair data", err);
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
         text: err.message || "ไม่สามารถอัปเดตข้อมูลการซ่อมได้",
       });
+    }
+  };
+
+  const UpdateTotalSheet = async (id: number, totalSheet: string) => {
+    const url = `${
+      import.meta.env.VITE_IP_API_NEST
+    }/smart-pkr-inspection-record/inspection-joblist/update-total-sheet`;
+
+    try {
+      const payload = { id, total_sheet: Number(totalSheet) };
+      const response = await axios.patch(url, payload);
+
+      if (response.status === 200 && response.data.status === "OK") {
+        await Swal.fire({
+          icon: "success",
+          title: "อัปเดต Total Sheet สำเร็จ",
+        });
+
+        // ✅ return fetchMainTableData ให้ parent รอ refresh เสร็จ
+        return await fetchMainTableData();
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "อัปเดตไม่สำเร็จ",
+          text: response.data?.message || "โปรดลองใหม่",
+        });
+        return response.data;
+      }
+    } catch (err: any) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: err.message || "ไม่สามารถอัปเดต Total Sheet ได้",
+      });
+      return { status: "ERROR", message: err.message };
+    }
+  };
+
+  const UpdateInspectorID = async (id: number, inspectorIDs: string) => {
+    const url = `${
+      import.meta.env.VITE_IP_API_NEST
+    }/smart-pkr-inspection-record/inspection-joblist/update-inspector-id`;
+
+    try {
+      const payload = { id, insp_id: inspectorIDs };
+      const response = await axios.patch(url, payload);
+
+      if (response.status === 200 && response.data.status === "OK") {
+        await Swal.fire({
+          icon: "success",
+          title: "อัปเดต Inspector สำเร็จ",
+        });
+
+        // ✅ return fetchMainTableData เช่นกัน
+        return await fetchMainTableData();
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "อัปเดตไม่สำเร็จ",
+          text: response.data?.message || "โปรดลองใหม่",
+        });
+        return response.data;
+      }
+    } catch (err: any) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: err.message || "ไม่สามารถอัปเดต Inspector ID ได้",
+      });
+      return { status: "ERROR", message: err.message };
     }
   };
 
@@ -339,5 +419,8 @@ export const Use_feature = () => {
     fetchLotForFilter,
     handleUpdateRepairData,
     postCreate,
+    UpdateInspectorID,
+    fetchMainTableData,
+    UpdateTotalSheet,
   };
 };

@@ -9,6 +9,8 @@ import DialogEditRecord from "../components/dialogEdit";
 import dayjs from "dayjs";
 import DialogConfirmPassword from "../components/dialogConfirmPassword";
 import DialogRepair from "../components/dialogRepair";
+import DialogInspectorNames from "../components/dialogInputIDInspector";
+import DialogTotalSheet from "../components/dialogInputTotalSheet";
 
 const PKRInspectionRecord = () => {
   const {
@@ -28,18 +30,18 @@ const PKRInspectionRecord = () => {
     openRepairDialog,
     setOpenRepairDialog,
     handleClickRepair,
+    handleOpenInspectorDialog,
+    handleOpenTotalSheetDialog,
+
+    openInspectorDialog,
+    openTotalSheetDialog,
+    setOpenTotalSheetDialog,
+    setOpenInspectorDialog,
+    handleSaveTotalSheet,
+    handleSaveInspectorNames,
   } = HandleFunction();
 
-  const {
-    selectedLot,
-    setSelectedLot,
-
-    lotDetail,
-
-    dataMainTable,
-
-    MainTableLoading,
-  } = Use_feature();
+  const { dataMainTable, fetchMainTableData, MainTableLoading } = Use_feature();
 
   const pocketInspectionColumns: GridColDef[] = [
     {
@@ -133,18 +135,132 @@ const PKRInspectionRecord = () => {
     {
       field: "total_sheet",
       headerName: "Total Sheet",
-      width: 130,
+      width: 150,
       type: "number",
       headerAlign: "center",
       align: "center",
+      renderCell: (params: any) => {
+        if (params.value) {
+          return (
+            <div className="flex items-center justify-center gap-2">
+              <span>{params.value}</span>
+              <button
+                onClick={() => handleOpenTotalSheetDialog(params.row)}
+                className="
+                  px-2 py-1 bg-yellow-300 hover:bg-yellow-500 
+                  text-xs font-semibold rounded-md shadow-md
+                  hover:scale-105 transition-all
+                "
+              >
+                ✏️
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div
+            className="
+          flex items-center justify-center"
+          >
+            <button
+              onClick={() => handleOpenTotalSheetDialog(params.row)}
+              className="
+             flex items-center justify-center gap-2
+                px-3 py-1.5 
+                bg-lime-400 hover:bg-lime-600 
+                text-black font-semibold
+                cursor-pointer
+                rounded-full shadow-md
+                transition-all duration-300
+                hover:scale-105 hover:shadow-lg hover:text-white
+                focus:outline-none focus:ring-2 focus:ring-lime-300
+            "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Sheet qty
+            </button>
+          </div>
+        );
+      },
     },
+
     {
       field: "insp_id",
       headerName: "Inspector ID",
       width: 130,
       headerAlign: "center",
       align: "center",
+      renderCell: (params: any) => {
+        if (params.value) {
+          return (
+            <div className="flex items-center justify-center gap-2">
+              <span>{params.value.replace(/_/g, ", ")}</span>
+              <button
+                onClick={() => handleOpenInspectorDialog(params.row)}
+                className="
+                  px-2 py-1 bg-yellow-300 hover:bg-yellow-500 
+                  text-xs font-semibold rounded-md shadow-md
+                  hover:scale-105 transition-all
+                "
+              >
+                ✏️
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div
+            className="
+            flex items-center justify-center"
+          >
+            <button
+              onClick={() => handleOpenInspectorDialog(params.row)}
+              className="
+            flex items-center justify-center gap-2
+                px-3 py-1.5 
+                bg-pink-400 hover:bg-pink-600 
+                text-black font-semibold
+                cursor-pointer
+                rounded-full shadow-md
+                transition-all duration-300
+                hover:scale-105 hover:shadow-lg hover:text-white
+                focus:outline-none focus:ring-2 focus:ring-pink-300
+            "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              ID
+            </button>
+          </div>
+        );
+      },
     },
+
     {
       field: "start_time",
       headerName: "Start Time",
@@ -373,7 +489,10 @@ const PKRInspectionRecord = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogCreateHeader onClose={handleCloseHeaderDialog} />
+        <DialogCreateHeader
+          onClose={handleCloseHeaderDialog}
+          fetchMainTableData={fetchMainTableData} // ✅ เพิ่มตรงนี้
+        />
       </Dialog>
 
       <Dialog
@@ -414,6 +533,52 @@ const PKRInspectionRecord = () => {
         onClose={() => setOpenRepairDialog(false)}
         onConfirm={(data) => handleClickRepair(data)} // ✅ ตรงนี้เรียก saveRepair()
       />
+
+      {/* ===== Dialog สำหรับ Total Sheet ===== */}
+      <Dialog
+        open={openTotalSheetDialog}
+        onClose={() => setOpenTotalSheetDialog(false)}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: 5,
+            overflow: "hidden",
+            maxWidth: 600,
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          },
+        }}
+      >
+        <DialogTotalSheet
+          open={openTotalSheetDialog}
+          onClose={() => setOpenTotalSheetDialog(false)}
+          formData={{ total_sheet: selectedRow?.total_sheet }}
+          onConfirm={handleSaveTotalSheet} // ✅ ฟังก์ชันที่เรียกใช้ UpdateTotalSheet ใน use_feature
+        />
+      </Dialog>
+
+     
+      <Dialog
+        open={openInspectorDialog}
+        onClose={() => setOpenInspectorDialog(false)}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: 5,
+            overflow: "hidden",
+            maxWidth: 600,
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          },
+        }}
+      >
+        <DialogInspectorNames
+          open={openInspectorDialog}
+          onClose={() => setOpenInspectorDialog(false)}
+          initialValue={selectedRow?.insp_id}
+          onConfirm={handleSaveInspectorNames} // ✅ ฟังก์ชันที่เรียกใช้ UpdateInspectorID ใน use_feature
+        />
+      </Dialog>
     </div>
   );
 };
