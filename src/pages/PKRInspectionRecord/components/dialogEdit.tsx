@@ -20,6 +20,21 @@ interface DialogEditRecordProps {
   onRepair: () => void;
 }
 
+interface InspectionRecord {
+  id?: number;
+  lot_no?: string;
+  product_name?: string;
+  pkr_remain_pcs?: number;
+  pkr_tear_pcs?: number;
+  pic_incomplete_pcs?: number;
+  pic_misposition_pcs?: number;
+  adh_flow_flow?: number;
+  mat_remain_pcs?: number;
+  others_rej?: number;
+  remark?: string;
+  [key: string]: any; // กัน error เวลาใช้ field ที่ยังไม่ได้ใส่ใน interface
+}
+
 const DialogEditRecord = ({
   open,
   onClose,
@@ -27,7 +42,7 @@ const DialogEditRecord = ({
   onSave,
   onRepair,
 }: DialogEditRecordProps) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<InspectionRecord>({});
 
   // sync formData เมื่อ rowData เปลี่ยน
   useEffect(() => {
@@ -360,8 +375,8 @@ const DialogEditRecord = ({
             <TextField
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <span>🚫</span>
-                  Others Rej
+                  <span>💬</span>
+                  <span>Remark</span>
                 </Box>
               }
               type="number"
@@ -402,7 +417,7 @@ const DialogEditRecord = ({
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <span>💬</span>
-                  Remark
+                  <span>Remark</span>
                 </Box>
               }
               multiline

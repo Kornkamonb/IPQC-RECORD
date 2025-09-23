@@ -36,7 +36,7 @@ const MyAutocomplete = ({
     uniqueOptions.unshift({ [uniqueKey]: "ALL" });
 
     // Sort by the first character (same as groupBy criteria)
-    return uniqueOptions.sort((a, b) =>
+    return uniqueOptions.sort((a : any, b: any) =>
       a[uniqueKey].charAt(0).localeCompare(b[uniqueKey].charAt(0))
     );
   }, [modalData, uniqueKey]);

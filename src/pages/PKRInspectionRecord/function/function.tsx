@@ -17,7 +17,7 @@ export const HandleFunction = () => {
     fetchLotForFilter,
     handleUpdateRepairData,
     UpdateInspectorID,
-    fetchMainTableData,
+
     UpdateTotalSheet,
   } = Use_feature();
 

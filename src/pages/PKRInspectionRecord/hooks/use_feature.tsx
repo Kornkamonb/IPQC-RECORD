@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import dayjs from "dayjs";
+
 import Swal from "sweetalert2";
 
 export interface LotDetail {
@@ -413,14 +413,19 @@ export const Use_feature = () => {
 
     dataMainTable,
     setDataMainTable,
+
     MainTableLoading,
+
     handleUpdateEditData,
     handleUpdateFinishTime,
+
     fetchLotForFilter,
     handleUpdateRepairData,
     postCreate,
     UpdateInspectorID,
     fetchMainTableData,
     UpdateTotalSheet,
+    lotDetailLoading,
+    Error,
   };
 };

@@ -17,13 +17,24 @@ interface DialogRepairProps {
   onConfirm: (data: any) => void;
 }
 
+interface InspectionRecord {
+  id?: number;
+  lot_no?: string;
+  product_name?: string;
+  process?: string;
+  total_sheet?: number;
+  others_rej?: number;
+  remark?: string;
+  [key: string]: any;
+}
+
 const DialogRepair = ({
   open,
   onClose,
   rowData,
   onConfirm,
 }: DialogRepairProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<InspectionRecord>({
     bodysmall_ng_pcs: null,
     bodybig_ng_pcs: null,
     acf_ng_pcs: null,
@@ -58,7 +69,7 @@ const DialogRepair = ({
   }, [rowData]);
 
   const handleChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = () => {
@@ -174,7 +185,6 @@ const DialogRepair = ({
                   handleChange("bodysmall_ng_pcs", value);
                 }}
                 fullWidth
-                inputProps={{ min: 0 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
@@ -193,7 +203,6 @@ const DialogRepair = ({
                   handleChange("bodysmall_acc_pcs", value);
                 }}
                 fullWidth
-                inputProps={{ min: 0 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
@@ -224,7 +233,6 @@ const DialogRepair = ({
                   handleChange("bodybig_ng_pcs", value);
                 }}
                 fullWidth
-                inputProps={{ min: 0 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
@@ -243,7 +251,6 @@ const DialogRepair = ({
                   handleChange("bodybig_acc_pcs", value);
                 }}
                 fullWidth
-                inputProps={{ min: 0 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
@@ -274,7 +281,6 @@ const DialogRepair = ({
                   handleChange("acf_ng_pcs", value);
                 }}
                 fullWidth
-                inputProps={{ min: 0 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
@@ -293,7 +299,6 @@ const DialogRepair = ({
                   handleChange("acf_acc_pcs", value);
                 }}
                 fullWidth
-                inputProps={{ min: 0 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
