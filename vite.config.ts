@@ -15,8 +15,8 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
   },
   includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
   manifest: {
-    name: "React-template-typescript",
-    short_name: "template-typescript",
+    name: "Smart pkr inspection record",
+    short_name: "PKR inspection record",
     description: "I am a React-template-typescript",
     icons: [
       {
