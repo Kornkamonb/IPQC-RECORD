@@ -112,19 +112,7 @@ const DialogConfirmPassword = ({
               gap: 1.5,
             }}
           >
-            🔒 Security Verification
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              mb: 3,
-              color: "#64748b",
-              fontSize: "0.95rem",
-              lineHeight: 1.6,
-            }}
-          >
-            กรุณาใส่รหัสผ่านเพื่อยืนยันการดำเนินการ เพื่อความปลอดภัยของระบบ
+            🔒 Verification
           </Typography>
 
           <TextField
@@ -156,30 +144,6 @@ const DialogConfirmPassword = ({
               },
             }}
           />
-
-          {/* Security Note */}
-          <Box
-            sx={{
-              mt: 2,
-              p: 2,
-              bgcolor: "rgba(245, 158, 11, 0.1)",
-              borderRadius: 2,
-              border: "1px solid rgba(245, 158, 11, 0.2)",
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{
-                color: "#92400e",
-                fontSize: "0.8rem",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              ⚠️ หมายเหตุ: การดำเนินการนี้จะมีผลต่อข้อมูลในระบบ
-            </Typography>
-          </Box>
         </Box>
       </DialogContent>
 

@@ -209,15 +209,15 @@ export const Use_feature = () => {
 
     try {
       const payload = {
-        id: formData.id ?? 0,
-        pkr_remain_pcs: formData.pkr_remain_pcs ?? 0,
-        pkr_tear_pcs: formData.pkr_tear_pcs ?? 0,
-        pic_incomplete_pcs: formData.pic_incomplete_pcs ?? 0,
-        pic_misposition_pcs: formData.pic_misposition_pcs ?? 0,
-        adh_flow_flow: formData.adh_flow_flow ?? 0,
-        mat_remain_pcs: formData.mat_remain_pcs ?? 0,
-        others_rej: formData.others_rej ?? 0,
-        remark: formData.remark ?? "",
+        id: String(formData.id ?? "0"),
+        pkr_remain_pcs: String(formData.pkr_remain_pcs ?? "0"),
+        pkr_tear_pcs: String(formData.pkr_tear_pcs ?? "0"),
+        pic_incomplete_pcs: String(formData.pic_incomplete_pcs ?? "0"),
+        pic_misposition_pcs: String(formData.pic_misposition_pcs ?? "0"),
+        adh_flow_flow: String(formData.adh_flow_flow ?? "0"),
+        mat_remain_pcs: String(formData.mat_remain_pcs ?? "0"),
+        others_rej: String(formData.others_rej ?? "0"),
+        remark: String(formData.remark ?? ""),
       };
 
       const response = await axios.patch(url, payload);
@@ -289,13 +289,13 @@ export const Use_feature = () => {
 
     try {
       const payload = {
-        id,
-        bodysmall_ng_pcs: data.bodysmall_ng_pcs ?? 0,
-        bodybig_ng_pcs: data.bodybig_ng_pcs ?? 0,
-        acf_ng_pcs: data.acf_ng_pcs ?? 0,
-        bodysmall_acc_pcs: data.bodysmall_acc_pcs ?? 0,
-        bodybig_acc_pcs: data.bodybig_acc_pcs ?? 0,
-        acf_acc_pcs: data.acf_acc_pcs ?? 0,
+        id: String(id),
+        bodysmall_ng_pcs: String(data.bodysmall_ng_pcs ?? "0"),
+        bodybig_ng_pcs: String(data.bodybig_ng_pcs ?? "0"),
+        acf_ng_pcs: String(data.acf_ng_pcs ?? "0"),
+        bodysmall_acc_pcs: String(data.bodysmall_acc_pcs ?? "0"),
+        bodybig_acc_pcs: String(data.bodybig_acc_pcs ?? "0"),
+        acf_acc_pcs: String(data.acf_acc_pcs ?? "0"),
       };
 
       const response = await axios.patch(url, payload);
