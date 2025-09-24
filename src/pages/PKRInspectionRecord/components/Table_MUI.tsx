@@ -168,6 +168,10 @@ function Table_MUIX({
             },
             "& .MuiDataGrid-cell": {
               padding: "6px 8px",
+              borderRight: "1px solid #e0e0e0", // ✅ เส้นแบ่งคอลัมน์
+            },
+            "& .MuiDataGrid-row": {
+              borderBottom: "1px solid #e0e0e0", // ✅ เส้นแบ่งแถว
             },
           }}
         />

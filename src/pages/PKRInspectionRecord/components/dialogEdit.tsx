@@ -190,9 +190,9 @@ const DialogEditRecord = ({
         {/* Product Information Card */}
         <Box
           sx={{
-            mb: 2,
+            mb: 1,
             mt: 2,
-            p: 3,
+            p: 2,
             background: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)",
             borderRadius: 3,
             boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
@@ -210,26 +210,13 @@ const DialogEditRecord = ({
             },
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 2,
-              color: "#1e293b",
-              fontWeight: 700,
-              display: "flex",
-              alignItems: "center",
-              gap: 1.5,
-            }}
-          >
-            📦 Product Information
-          </Typography>
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
             <Box>
               <Chip
                 label="Lot Number"
                 size="small"
                 sx={{
-                  mb: 1.5,
+                  mb: 1,
                   bgcolor: "#e0e7ff",
                   color: "#4338ca",
                   fontWeight: 600,
@@ -252,7 +239,7 @@ const DialogEditRecord = ({
                 label="Product Name"
                 size="small"
                 sx={{
-                  mb: 1.5,
+                  mb: 1,
                   bgcolor: "#dcfce7",
                   color: "#166534",
                   fontWeight: 600,
@@ -271,19 +258,12 @@ const DialogEditRecord = ({
               </Typography>
             </Box>
           </Box>
-
-          {/* Debug Info - เอาออกได้เมื่อแก้ไขเสร็จแล้ว */}
-          <Box sx={{ mt: 2, p: 1, bgcolor: "#f3f4f6", borderRadius: 1 }}>
-            <Typography variant="caption" color="textSecondary">
-              🐛 Debug: ID = {rowData?.id || "NO ID FOUND"}
-            </Typography>
-          </Box>
         </Box>
 
         {/* Form Fields Card */}
         <Box
           sx={{
-            p: 3,
+            p: 2,
             background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
             borderRadius: 3,
             boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
@@ -311,31 +291,28 @@ const DialogEditRecord = ({
               gap: 1.5,
             }}
           >
-            ✏️ Edit Values
+            ✏️ ระบุจำนวนของเสีย
           </Typography>
 
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
             {[
-              { field: "pkr_remain_pcs", label: "PKR Remain Pcs", icon: "📦" },
-              { field: "pkr_tear_pcs", label: "PKR Tear Pcs", icon: "💥" },
+              { field: "pkr_remain_pcs", label: "PKR Remain (pcs)" },
+              { field: "pkr_tear_pcs", label: "PKR Tear (pcs)" },
               {
                 field: "pic_incomplete_pcs",
-                label: "PIC Incomplete Pcs",
-                icon: "⚠️",
+                label: "PIC Incomplete (pcs)",
               },
               {
                 field: "pic_misposition_pcs",
-                label: "PIC Misposition Pcs",
-                icon: "🔄",
+                label: "PIC Misposition (pcs)",
               },
-              { field: "adh_flow_flow", label: "Adh Flow Flow", icon: "🌊" },
-              { field: "mat_remain_pcs", label: "Mat Remain Pcs", icon: "🧱" },
-            ].map(({ field, label, icon }) => (
+              { field: "adh_flow_flow", label: "Adh Flow Flow (pcs)" },
+              { field: "mat_remain_pcs", label: "Mat Remain (pcs)" },
+            ].map(({ field, label }) => (
               <TextField
                 key={field}
                 label={
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <span>{icon}</span>
                     {label}
                   </Box>
                 }
@@ -375,8 +352,7 @@ const DialogEditRecord = ({
             <TextField
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <span>💬</span>
-                  <span>Remark</span>
+                  <span>Other defect (pcs)</span>
                 </Box>
               }
               type="number"
@@ -390,7 +366,7 @@ const DialogEditRecord = ({
               fullWidth
               variant="outlined"
               sx={{
-                gridColumn: "span 2",
+                gridColumn: "span 1",
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2,
                   background:

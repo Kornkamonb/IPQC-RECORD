@@ -7,32 +7,70 @@ const InspectionCompleteRecord = () => {
   const { dataMainTable, mainTableLoading } = Use_feature();
 
   const mainTableColumns: GridColDef[] = [
+    // {
+    //   field: "create_date",
+    //   headerName: "Create Date",
+    //   width: 190,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   renderCell: (params: any) => (
+    //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
+    //   ),
+    // },
+    // {
+    //   field: "update_date",
+    //   headerName: "Update Date",
+    //   width: 190,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   renderCell: (params: any) => (
+    //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
+    //   ),
+    // },
     {
-      field: "create_date",
-      headerName: "Create Date",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
-    {
-      field: "update_date",
-      headerName: "Update Date",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
-    {
-      field: "lot_no",
-      headerName: "Lot No",
+      field: "start_time",
+      headerName: "Start Time",
       width: 150,
       headerAlign: "center",
       align: "center",
+      renderCell: (params: any) => (
+        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm")}</div>
+      ),
+    },
+    {
+      field: "stop_time",
+      headerName: "Stop Time",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params: any) => (
+        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm")}</div>
+      ),
+    },
+    {
+      field: "time_finish",
+      headerName: "LD confirm",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params: any) => {
+        const value = params.value;
+
+        if (!value) {
+          return <span className="text-gray-400 italic">wait</span>;
+        }
+
+        return (
+          <span
+            className="
+              px-2 py-1 rounded-full text-xs font-semibold
+              bg-green-100 text-green-800
+            "
+          >
+            {dayjs(value).format("YYYY-MM-DD HH:mm")}
+          </span>
+        );
+      },
     },
     {
       field: "product_name",
@@ -41,17 +79,26 @@ const InspectionCompleteRecord = () => {
       headerAlign: "center",
       align: "center",
     },
+
+    {
+      field: "lot_no",
+      headerName: "Lot No",
+      width: 120,
+      headerAlign: "center",
+      align: "center",
+    },
+
     {
       field: "process",
       headerName: "Process",
-      width: 150,
+      width: 100,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "total_sheet",
-      headerName: "Total Sheet",
-      width: 130,
+      headerName: "Sht",
+      width: 80,
       type: "number",
       headerAlign: "center",
       align: "center",
@@ -59,20 +106,11 @@ const InspectionCompleteRecord = () => {
     {
       field: "insp_id",
       headerName: "Inspector ID",
-      width: 130,
+      width: 170,
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "start_time",
-      headerName: "Start Time",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
+
     {
       field: "pkr_remain_pcs",
       headerName: "PKR Remain (pcs)",
@@ -107,7 +145,7 @@ const InspectionCompleteRecord = () => {
     },
     {
       field: "adh_flow_flow",
-      headerName: "ADH Flow",
+      headerName: "ADH Flow (pcs)",
       width: 130,
       headerAlign: "center",
       align: "center",
@@ -122,25 +160,16 @@ const InspectionCompleteRecord = () => {
     },
     {
       field: "others_rej",
-      headerName: "Others Reject",
+      headerName: "Others Reject (pcs)",
       width: 150,
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "stop_time",
-      headerName: "Stop Time",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
+
     {
       field: "remark",
       headerName: "Remark",
-      width: 200,
+      width: 400,
       headerAlign: "center",
       align: "center",
     },
@@ -191,16 +220,6 @@ const InspectionCompleteRecord = () => {
       type: "number",
       headerAlign: "center",
       align: "center",
-    },
-    {
-      field: "time_finish",
-      headerName: "Time Finish",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
     },
   ];
 

@@ -47,7 +47,7 @@ const PKRInspectionRecord = () => {
     {
       field: "id",
       headerName: "Edit",
-      width: 100,
+      width: 60,
       sortable: false,
       headerAlign: "center",
       align: "center",
@@ -86,56 +86,200 @@ const PKRInspectionRecord = () => {
                 d="M19.5 13.5V19.5A1.5 1.5 0 0118 21H6a1.5 1.5 0 01-1.5-1.5V6A1.5 1.5 0 016 4.5h5.379"
               />
             </svg>
-            Edit
           </button>
         </div>
       ),
     },
+    // {
+    //   field: "create_date",
+    //   headerName: "Create Date",
+    //   width: 150,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   renderCell: (params: any) => (
+    //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm")}</div>
+    //   ),
+    // },
+    // {
+    //   field: "update_date",
+    //   headerName: "Update Date",
+    //   width: 190,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   renderCell: (params: any) => (
+    //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
+    //   ),
+    // },
     {
-      field: "create_date",
-      headerName: "Create Date",
-      width: 190,
+      field: "time_finish",
+      headerName: "LD check",
+      width: 80,
       headerAlign: "center",
       align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
+      renderCell: (params: any) => {
+        const row = params.row;
+
+        if (row.time_finish) {
+          return (
+            <div>{dayjs(row.time_finish).format("YYYY-MM-DD HH:mm:ss")}</div>
+          );
+        }
+
+        const isDisabled = !row.stop_time; // ❌ ถ้า stop_time เป็น null => disable ปุ่ม
+
+        return (
+          <div className="flex items-center justify-center w-full">
+            <button
+              onClick={() => !isDisabled && handleOpenConfirmDialog(row)}
+              disabled={isDisabled}
+              className={`
+                flex items-center justify-center gap-2
+                px-3 py-1.5 rounded-full shadow-md transition-all duration-300
+                ${
+                  isDisabled
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-400 hover:bg-blue-600 text-black hover:text-white hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                }
+              `}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      },
     },
     {
-      field: "update_date",
-      headerName: "Update Date",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
-    {
-      field: "lot_no",
-      headerName: "Lot No",
+      field: "start_time",
+      headerName: "Start",
       width: 100,
       headerAlign: "center",
       align: "center",
+      renderCell: (params: any) => {
+        const value = params.value;
+
+        if (!value) {
+          return <span className="text-gray-400 italic">wait</span>;
+        }
+
+        const date = dayjs(value).format("YYYY-MM-DD");
+        const time = dayjs(value).format("HH:mm");
+
+        return (
+          <div className="flex flex-col items-center">
+            <span>{date}</span>
+            <span
+              className="
+                px-2 py-0.5 rounded-full text-xs font-semibold
+                bg-green-100 text-green-800
+              "
+            >
+              {time}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "stop_time",
+      headerName: "Stop",
+      width: 100,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params: any) => {
+        const value = params.value;
+
+        if (!value) {
+          return <span className="text-gray-400 italic">wait</span>;
+        }
+
+        const date = dayjs(value).format("YYYY-MM-DD");
+        const time = dayjs(value).format("HH:mm");
+
+        return (
+          <div className="flex flex-col items-center">
+            <span>{date}</span>
+            <span
+              className="
+                px-2 py-0.5 rounded-full text-xs font-semibold
+                bg-green-100 text-green-800
+              "
+            >
+              {time}
+            </span>
+          </div>
+        );
+      },
     },
     {
       field: "product_name",
       headerName: "Product Name",
-      width: 180,
+      width: 140,
       headerAlign: "center",
       align: "center",
+      renderCell: (params: any) => {
+        const value = params.value;
+
+        return (
+          <div className="flex flex-col items-center">
+            <span
+              className="
+                px-2 py-0.5 rounded-full text-xs font-semibold
+                 text-gray-800
+              "
+            >
+              {value}
+            </span>
+          </div>
+        );
+      },
     },
     {
-      field: "process",
-      headerName: "Process",
-      width: 150,
+      field: "lot_no",
+      headerName: "Lot No",
+      width: 120,
       headerAlign: "center",
       align: "center",
+      renderCell: (params: any) => {
+        const value = params.value;
+
+        return (
+          <div className="flex flex-col items-center">
+            <span
+              className="
+                px-2 py-0.5 rounded-full text-xs font-semibold
+                 text-gray-800
+              "
+            >
+              {value}
+            </span>
+          </div>
+        );
+      },
     },
+    // {
+    //   field: "process",
+    //   headerName: "Process",
+    //   width: 150,
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
     {
       field: "total_sheet",
       headerName: "Total Sheet",
-      width: 150,
+      width: 120,
       type: "number",
       headerAlign: "center",
       align: "center",
@@ -147,8 +291,8 @@ const PKRInspectionRecord = () => {
               <button
                 onClick={() => handleOpenTotalSheetDialog(params.row)}
                 className="
-                  px-2 py-1 bg-yellow-300 hover:bg-yellow-500 
-                  text-xs font-semibold rounded-md shadow-md
+                  px-2 py-2 bg-gray-300 hover:bg-yellow-500 
+                  text-xs font-semibold rounded-full shadow-md
                   hover:scale-105 transition-all
                 "
               >
@@ -167,7 +311,7 @@ const PKRInspectionRecord = () => {
               className="
              flex items-center justify-center gap-2
                 px-3 py-1.5 
-                bg-lime-400 hover:bg-lime-600 
+                bg-lime-100 hover:bg-lime-600 
                 text-black font-semibold
                 cursor-pointer
                 rounded-full shadow-md
@@ -190,7 +334,7 @@ const PKRInspectionRecord = () => {
                   d="M12 4.5v15m7.5-7.5h-15"
                 />
               </svg>
-              Sheet qty
+              Sht qty
             </button>
           </div>
         );
@@ -200,18 +344,18 @@ const PKRInspectionRecord = () => {
     {
       field: "insp_id",
       headerName: "Inspector ID",
-      width: 130,
+      width: 190,
       headerAlign: "center",
       align: "center",
       renderCell: (params: any) => {
         if (params.value) {
           return (
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-end justify-end gap-2">
               <span>{params.value.replace(/_/g, ", ")}</span>
               <button
                 onClick={() => handleOpenInspectorDialog(params.row)}
                 className="
-                  px-2 py-1 bg-yellow-300 hover:bg-yellow-500 
+                  px-2 py-1 bg-gray-300 hover:bg-yellow-500 
                   text-xs font-semibold rounded-md shadow-md
                   hover:scale-105 transition-all
                 "
@@ -231,7 +375,7 @@ const PKRInspectionRecord = () => {
               className="
             flex items-center justify-center gap-2
                 px-3 py-1.5 
-                bg-pink-400 hover:bg-pink-600 
+                bg-pink-100 hover:bg-pink-600 
                 text-black font-semibold
                 cursor-pointer
                 rounded-full shadow-md
@@ -261,181 +405,116 @@ const PKRInspectionRecord = () => {
       },
     },
 
-    {
-      field: "start_time",
-      headerName: "Start Time",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
-    {
-      field: "pkr_remain_pcs",
-      headerName: "PKR Remain (pcs)",
-      width: 150,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "pkr_tear_pcs",
-      headerName: "PKR Tear (pcs)",
-      width: 150,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "pic_incomplete_pcs",
-      headerName: "PIC Incomplete (pcs)",
-      width: 170,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "pic_misposition_pcs",
-      headerName: "PIC Misposition (pcs)",
-      width: 180,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "adh_flow_flow",
-      headerName: "ADH Flow",
-      width: 130,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "mat_remain_pcs",
-      headerName: "Mat Remain (pcs)",
-      width: 160,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "others_rej",
-      headerName: "Others Reject",
-      width: 150,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "stop_time",
-      headerName: "Stop Time",
-      width: 190,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => (
-        <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-      ),
-    },
-    {
-      field: "remark",
-      headerName: "Remark",
-      width: 200,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "bodysmall_ng_pcs",
-      headerName: "Body Small NG (pcs)",
-      width: 180,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "bodybig_ng_pcs",
-      headerName: "Body Big NG (pcs)",
-      width: 180,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "acf_ng_pcs",
-      headerName: "ACF NG (pcs)",
-      width: 150,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "bodysmall_acc_pcs",
-      headerName: "Body Small Acc (pcs)",
-      width: 180,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "bodybig_acc_pcs",
-      headerName: "Body Big Acc (pcs)",
-      width: 180,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "acf_acc_pcs",
-      headerName: "ACF Acc (pcs)",
-      width: 150,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "time_finish",
-      headerName: "Time Finish",
-      width: 180,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params: any) => {
-        if (params.value) {
-          return <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>;
-        }
-        return (
-          <div className="flex items-center justify-center w-full">
-            <button
-              onClick={() => handleOpenConfirmDialog(params.row)}
-              className="
-                flex items-center justify-center gap-2
-                px-3 py-1.5 
-                bg-blue-400 hover:bg-blue-600 
-                text-black font-semibold
-                cursor-pointer
-                rounded-full shadow-md
-                transition-all duration-300
-                hover:scale-105 hover:shadow-lg hover:text-white
-                focus:outline-none focus:ring-2 focus:ring-blue-300
-              "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-              Confirm
-            </button>
-          </div>
-        );
-      },
-    },
+    // {
+    //   field: "pkr_remain_pcs",
+    //   headerName: "PKR Remain (pcs)",
+    //   width: 150,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "pkr_tear_pcs",
+    //   headerName: "PKR Tear (pcs)",
+    //   width: 150,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "pic_incomplete_pcs",
+    //   headerName: "PIC Incomplete (pcs)",
+    //   width: 170,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "pic_misposition_pcs",
+    //   headerName: "PIC Misposition (pcs)",
+    //   width: 180,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "adh_flow_flow",
+    //   headerName: "ADH Flow",
+    //   width: 130,
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "mat_remain_pcs",
+    //   headerName: "Mat Remain (pcs)",
+    //   width: 160,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "others_rej",
+    //   headerName: "Others Reject",
+    //   width: 150,
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+
+    // {
+    //   field: "remark",
+    //   headerName: "Remark",
+    //   width: 200,
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "bodysmall_ng_pcs",
+    //   headerName: "Body Small NG (pcs)",
+    //   width: 180,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "bodybig_ng_pcs",
+    //   headerName: "Body Big NG (pcs)",
+    //   width: 180,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "acf_ng_pcs",
+    //   headerName: "ACF NG (pcs)",
+    //   width: 150,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "bodysmall_acc_pcs",
+    //   headerName: "Body Small Acc (pcs)",
+    //   width: 180,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "bodybig_acc_pcs",
+    //   headerName: "Body Big Acc (pcs)",
+    //   width: 180,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
+    // {
+    //   field: "acf_acc_pcs",
+    //   headerName: "ACF Acc (pcs)",
+    //   width: 150,
+    //   type: "number",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
   ];
 
   return (
@@ -557,7 +636,6 @@ const PKRInspectionRecord = () => {
         />
       </Dialog>
 
-     
       <Dialog
         open={openInspectorDialog}
         onClose={() => setOpenInspectorDialog(false)}
