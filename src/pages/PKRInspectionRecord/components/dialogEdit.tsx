@@ -296,8 +296,8 @@ const DialogEditRecord = ({
 
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
             {[
-              { field: "pkr_remain_pcs", label: "PKR Remain (pcs)" },
-              { field: "pkr_tear_pcs", label: "PKR Tear (pcs)" },
+              { field: "pkr_remain_pcs", label: "No.19 PKR Remain (pcs)" },
+              { field: "pkr_tear_pcs", label: "No.19 PKR Tear (pcs)" },
               {
                 field: "pic_incomplete_pcs",
                 label: "PIC Incomplete (pcs)",
@@ -306,8 +306,8 @@ const DialogEditRecord = ({
                 field: "pic_misposition_pcs",
                 label: "PIC Misposition (pcs)",
               },
-              { field: "adh_flow_flow", label: "Adh Flow Flow (pcs)" },
-              { field: "mat_remain_pcs", label: "Mat Remain (pcs)" },
+              { field: "adh_flow_flow", label: "No.10 Adh Flow Flow (pcs)" },
+              { field: "mat_remain_pcs", label: "No.12 Mat Remain (pcs)" },
             ].map(({ field, label }) => (
               <TextField
                 key={field}
