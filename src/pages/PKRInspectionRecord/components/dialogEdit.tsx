@@ -306,7 +306,7 @@ const DialogEditRecord = ({
                 field: "pic_misposition_pcs",
                 label: "PIC Misposition (pcs)",
               },
-              { field: "adh_flow_flow", label: "No.10 Adh Flow Flow (pcs)" },
+              { field: "adh_flow_flow", label: "No.10 Adh Flow (pcs)" },
               { field: "mat_remain_pcs", label: "No.12 Mat Remain (pcs)" },
             ].map(({ field, label }) => (
               <TextField
