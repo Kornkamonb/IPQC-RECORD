@@ -1,6 +1,6 @@
 import { Use_feature } from "../hooks/use_feature";
 import Table_MUIX from "../components/Table_MUI";
-
+import Tooltip from "@mui/material/Tooltip";
 import { GridColDef } from "@mui/x-data-grid";
 import DialogCreateHeader from "../components/dialogCreateHeader";
 import { Dialog } from "@mui/material";
@@ -110,6 +110,7 @@ const PKRInspectionRecord = () => {
     //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
     //   ),
     // },
+
     {
       field: "time_finish",
       headerName: "LD check",
@@ -129,10 +130,19 @@ const PKRInspectionRecord = () => {
 
         return (
           <div className="flex items-center justify-center w-full">
-            <button
-              onClick={() => !isDisabled && handleOpenConfirmDialog(row)}
-              disabled={isDisabled}
-              className={`
+            <Tooltip
+              title="กรุณากรอก result ให้ครบก่อน check"
+              placement="top"
+              arrow
+              disableHoverListener={!isDisabled} // ปิด tooltip ถ้าไม่ disable
+            >
+              <span>
+                {" "}
+                {/* จำเป็นต้องใช้ span เพื่อให้ tooltip ทำงานกับ disabled button */}
+                <button
+                  onClick={() => !isDisabled && handleOpenConfirmDialog(row)}
+                  disabled={isDisabled}
+                  className={`
                 flex items-center justify-center gap-2
                 px-3 py-1.5 rounded-full shadow-md transition-all duration-300
                 ${
@@ -141,22 +151,24 @@ const PKRInspectionRecord = () => {
                     : "bg-blue-400 hover:bg-blue-600 text-black hover:text-white hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 }
               `}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-            </button>
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                </button>
+              </span>
+            </Tooltip>
           </div>
         );
       },
