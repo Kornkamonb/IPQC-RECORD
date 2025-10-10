@@ -26,6 +26,10 @@ export const Link = () => {
         path: "/smart-pkr-inspection-record/complete-record",
         label: "Inspection complete record",
       },
+      {
+        path: "/smart-pkr-inspection-record/inspection-action",
+        label: "Inspection Action",
+      },
     ],
   };
 

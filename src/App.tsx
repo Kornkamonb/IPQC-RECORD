@@ -21,6 +21,10 @@ const InspectionCompleteRecord = React.lazy(
   () => import("@/pages/InspectionCompleteRecord/main/main")
 );
 
+const InspectionAction = React.lazy(
+  () => import("@/pages/InspectionAction/main/main")
+);
+
 function App() {
   const [themeColors, setThemeColors] = useState<any>({});
 
@@ -105,6 +109,10 @@ function App() {
                 <Route
                   path="/smart-pkr-inspection-record/complete-record"
                   element={<InspectionCompleteRecord />}
+                />
+                <Route
+                  path="/smart-pkr-inspection-record/inspection-action"
+                  element={<InspectionAction />}
                 />
               </Route>
             </Routes>
