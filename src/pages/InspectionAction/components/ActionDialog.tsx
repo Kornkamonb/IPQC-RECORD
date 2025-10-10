@@ -48,7 +48,7 @@ const StyledButton = styled(Button)(({}) => ({
   },
 }));
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+const StyledTextField = styled(TextField)(({}) => ({
   // Apply Arial to the entire TextField container
   ...commonArialStyle,
   "& .MuiOutlinedInput-root": {
