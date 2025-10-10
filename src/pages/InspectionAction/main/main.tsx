@@ -42,7 +42,7 @@ const InspectionAction = () => {
       headerName: "Insp ID",
       width: 120,
       headerAlign: "center",
-      align: "center",
+      align: "left",
     },
     {
       field: "proc_rej",
@@ -74,7 +74,7 @@ const InspectionAction = () => {
     {
       field: "other_rej",
       headerName: "Other Rej",
-      width: 150,
+      width: 120,
       headerAlign: "center",
       align: "left",
     },
@@ -96,7 +96,7 @@ const InspectionAction = () => {
     {
       field: "action_detail",
       headerName: "Action Detail",
-      width: 220,
+      width: 450,
       headerAlign: "center",
       align: "left",
       renderCell: (params: any) => {
