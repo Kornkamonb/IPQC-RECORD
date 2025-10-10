@@ -95,6 +95,7 @@ export const Use_feature = () => {
           text: response.data.message || "กรุณาลองใหม่อีกครั้ง",
           confirmButtonColor: "#d33",
         });
+        setOpenActionDialog(false);
       }
     } catch (error: any) {
       console.error("Error updating action:", error);
@@ -104,6 +105,7 @@ export const Use_feature = () => {
         text: error.message,
         confirmButtonColor: "#d33",
       });
+      setOpenActionDialog(false);
     }
   };
 

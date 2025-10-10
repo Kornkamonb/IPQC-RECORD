@@ -168,6 +168,12 @@ function Table_MUIX({
             },
             "& .MuiDataGrid-cell": {
               padding: "6px 8px",
+              display: "flex",
+              alignItems: "center",
+            },
+            "& .MuiDataGrid-cellContent": {
+              whiteSpace: "normal",
+              lineHeight: "1.4rem",
             },
           }}
         />

@@ -103,10 +103,8 @@ const InspectionAction = () => {
         const row = params.row;
 
         // ✅ ถ้ามีเวลา finish แสดงผลเวลา
-        if (row.time_finish) {
-          return (
-            <div>{dayjs(row.time_finish).format("YYYY-MM-DD HH:mm:ss")}</div>
-          );
+        if (row.action_detail) {
+          return <div>{params.value}</div>;
         }
 
         // ✅ แสดงปุ่มกด action โดยไม่เช็คเงื่อนไข disable
@@ -147,6 +145,12 @@ const InspectionAction = () => {
       width: 120,
       headerAlign: "center",
       align: "center",
+      renderCell: (params) =>
+        params.value ? (
+          <span>{params.value}</span>
+        ) : (
+          <span className="text-gray-400 italic">wait update</span>
+        ),
     },
     {
       field: "action_date",
@@ -155,9 +159,11 @@ const InspectionAction = () => {
       headerAlign: "center",
       align: "center",
       renderCell: (params) => {
-        const date = params.value
-          ? dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")
-          : "-";
+        const date = params.value ? (
+          dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")
+        ) : (
+          <span className="text-gray-400 italic">wait update</span>
+        );
         return <span>{date}</span>;
       },
     },
