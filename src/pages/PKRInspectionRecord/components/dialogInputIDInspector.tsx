@@ -110,7 +110,7 @@ const DialogInspectorNames = ({
       >
         <Typography
           variant="body2"
-          sx={{ mb: 2, color: "#475569", fontWeight: 500 }}
+          sx={{ mb: 2, mt:2, color: "#475569", fontWeight: 500 }}
         >
           ใส่ชื่อ Inspector แล้วกด Enter หรือกดปุ่ม ➕
         </Typography>

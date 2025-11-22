@@ -83,7 +83,7 @@ export const HandleFunction = () => {
     }
 
     try {
-      await handleUpdateFinishTime(selectedRow.id, selectedRow); // ✅ จะรอจน refresh เสร็จ
+      await handleUpdateFinishTime(selectedRow.id, selectedRow);
       setOpenConfirmDialog(false);
     } catch (err) {
       console.error("Failed to update finish time:", err);
