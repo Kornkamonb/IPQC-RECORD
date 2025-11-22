@@ -15,33 +15,35 @@ import DialogTotalSheet from "../components/dialogInputTotalSheet";
 const PKRInspectionRecord = () => {
   const {
     openHeaderDialog,
-    openConfirmDialog,
+ 
     handleClickCreateHeader,
     handleCloseHeaderDialog,
-    handleOpenConfirmDialog,
-
-    setOpenConfirmDialog,
+  
     handleClickEdit,
     openEditDialog,
     handleCloseEditDialog,
     handleSaveEdit,
     selectedRow,
-    handleConfirmDialog,
+   
     openRepairDialog,
     setOpenRepairDialog,
     handleClickRepair,
-    handleOpenInspectorDialog,
-    handleOpenTotalSheetDialog,
-
-    openInspectorDialog,
-    openTotalSheetDialog,
-    setOpenTotalSheetDialog,
-    setOpenInspectorDialog,
-    handleSaveTotalSheet,
-    handleSaveInspectorNames,
+   
+    
+ 
   } = HandleFunction();
 
-  const { dataMainTable, fetchMainTableData, MainTableLoading } = Use_feature();
+  const { dataMainTable, fetchMainTableData, MainTableLoading,    handleSaveTotalSheet,
+    handleOpenTotalSheetDialog,
+    handleCloseTotalSheetDialog,openTotalSheetDialog, handleOpenInspectorDialog,
+    handleOpenConfirmDialog,
+    handleConfirmDialog,
+    setOpenConfirmDialog,
+    openConfirmDialog,
+    openInspectorDialog,
+    setOpenInspectorDialog,
+    handleSaveInspectorNames,
+    handleCloseopenInspectorDialog } = Use_feature();
 
   const pocketInspectionColumns: GridColDef[] = [
     {
@@ -90,27 +92,7 @@ const PKRInspectionRecord = () => {
         </div>
       ),
     },
-    // {
-    //   field: "create_date",
-    //   headerName: "Create Date",
-    //   width: 150,
-    //   headerAlign: "center",
-    //   align: "center",
-    //   renderCell: (params: any) => (
-    //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm")}</div>
-    //   ),
-    // },
-    // {
-    //   field: "update_date",
-    //   headerName: "Update Date",
-    //   width: 190,
-    //   headerAlign: "center",
-    //   align: "center",
-    //   renderCell: (params: any) => (
-    //     <div>{dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")}</div>
-    //   ),
-    // },
-
+  
     {
       field: "time_finish",
       headerName: "LD check",
@@ -564,15 +546,7 @@ const PKRInspectionRecord = () => {
         </button>
       </div>
 
-      <div>
-        <Table_MUIX
-          datas={dataMainTable}
-          columns={pocketInspectionColumns}
-          not_show_Count={false}
-          loading={MainTableLoading}
-          height={800}
-        />
-      </div>
+     
 
       <Dialog
         open={openHeaderDialog}
@@ -628,7 +602,7 @@ const PKRInspectionRecord = () => {
       {/* ===== Dialog สำหรับ Total Sheet ===== */}
       <Dialog
         open={openTotalSheetDialog}
-        onClose={() => setOpenTotalSheetDialog(false)}
+        onClose={handleCloseTotalSheetDialog}
         fullWidth
         maxWidth="sm"
         PaperProps={{
@@ -642,7 +616,7 @@ const PKRInspectionRecord = () => {
       >
         <DialogTotalSheet
           open={openTotalSheetDialog}
-          onClose={() => setOpenTotalSheetDialog(false)}
+          onClose={handleCloseTotalSheetDialog}
           formData={{ total_sheet: selectedRow?.total_sheet }}
           onConfirm={handleSaveTotalSheet} // ✅ ฟังก์ชันที่เรียกใช้ UpdateTotalSheet ใน use_feature
         />
@@ -664,11 +638,21 @@ const PKRInspectionRecord = () => {
       >
         <DialogInspectorNames
           open={openInspectorDialog}
-          onClose={() => setOpenInspectorDialog(false)}
+          onClose={handleCloseopenInspectorDialog}
           initialValue={selectedRow?.insp_id}
           onConfirm={handleSaveInspectorNames} // ✅ ฟังก์ชันที่เรียกใช้ UpdateInspectorID ใน use_feature
         />
       </Dialog>
+
+       <div>
+        <Table_MUIX
+          datas={dataMainTable}
+          columns={pocketInspectionColumns}
+          not_show_Count={false}
+          loading={MainTableLoading}
+          height={800}
+        />
+      </div>
     </div>
   );
 };

@@ -18,8 +18,12 @@ export const Use_feature = () => {
   const [lotDetail, setLotDetail] = useState<LotDetail | null>(null);
   const [lotFilter, setLotFilter] = useState<LotDetail[]>([]);
   const [dataMainTable, setDataMainTable] = useState<[]>([]);
-
-  const fetchLotForFilter = async () => {
+  const [openTotalSheetDialog, setOpenTotalSheetDialog] = useState(false);
+   const [selectedRow, setSelectedRow] = useState<any>({});
+ const [openInspectorDialog, setOpenInspectorDialog] = useState(false);
+   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+  
+ const fetchLotForFilter = async () => {
     const url = `${
       import.meta.env.VITE_IP_API_NEST
     }/smart-pkr-inspection-record/inspection-joblist/get-all-detail`;
@@ -337,8 +341,8 @@ export const Use_feature = () => {
           title: "อัปเดต Total Sheet สำเร็จ",
         });
 
-        // ✅ return fetchMainTableData ให้ parent รอ refresh เสร็จ
-        return await fetchMainTableData();
+     
+      
       } else {
         Swal.fire({
           icon: "warning",
@@ -392,6 +396,81 @@ export const Use_feature = () => {
     }
   };
 
+    const handleSaveTotalSheet = async (value: string) => {
+    if (!selectedRow?.id) return;
+
+    try {
+      await UpdateTotalSheet(selectedRow.id, value);
+      setOpenTotalSheetDialog(false);
+    } catch (error) {
+      console.error("Update Total Sheet error:", error);
+    }
+  };
+
+     const handleOpenTotalSheetDialog = (row: any) => {
+    setSelectedRow(row);
+    setOpenTotalSheetDialog(true);
+  };
+
+   const handleCloseTotalSheetDialog = async() => {
+    await fetchMainTableData()
+    setOpenTotalSheetDialog(false)
+  
+  }
+
+  
+  const handleSaveInspectorNames = async (value: string) => {
+    if (!selectedRow?.id) return;
+
+    try {
+      await UpdateInspectorID(selectedRow.id, value);
+      setOpenInspectorDialog(false);
+    } catch (error) {
+      console.error("Update Inspector error:", error);
+    }
+  };
+  const handleOpenInspectorDialog = (row: any) => {
+    setSelectedRow(row);
+    setOpenInspectorDialog(true);
+  };
+   const handleCloseopenInspectorDialog = async() => {
+      await fetchMainTableData()
+    setOpenInspectorDialog(false)
+  }
+
+  
+   const handleOpenConfirmDialog = (rowData: any) => {
+    setSelectedRow(rowData);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = (rowData: any) => {
+    setSelectedRow(rowData);
+    setOpenConfirmDialog(false);
+  };
+
+  const handleConfirmDialog = async (password: string) => {
+    if (password !== "1111") {
+      Swal.fire({
+        icon: "error",
+        title: "รหัสผ่านไม่ถูกต้อง",
+        text: "กรุณาลองอีกครั้ง",
+      });
+      return;
+    }
+
+    try {
+      await handleUpdateFinishTime(selectedRow.id, selectedRow);
+      setOpenConfirmDialog(false);
+    } catch (err) {
+      console.error("Failed to update finish time:", err);
+    }
+  };
+
+
+
+
+
   useEffect(() => {
     fetchMainTableData();
     fetchLotForFilter();
@@ -427,5 +506,22 @@ export const Use_feature = () => {
     UpdateTotalSheet,
     lotDetailLoading,
     Error,
+    selectedRow,
+    openTotalSheetDialog,
+    handleSaveTotalSheet,
+    handleOpenTotalSheetDialog,
+    handleCloseTotalSheetDialog,
+    setOpenTotalSheetDialog,
+    handleOpenInspectorDialog,
+    openInspectorDialog,
+    setOpenInspectorDialog,
+    handleSaveInspectorNames,
+   handleCloseopenInspectorDialog,
+    openConfirmDialog,
+    handleOpenConfirmDialog,
+    handleCloseConfirmDialog,
+    handleConfirmDialog,
+    setOpenConfirmDialog,
+  
   };
 };

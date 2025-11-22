@@ -6,7 +6,7 @@ const titleMap = {
   "/smart-pkr-inspection-record": "PKR Inspection Record",
   "/smart-pkr-inspection-record/record": "PKR Inspection Record",
   "/smart-pkr-inspection-record/complete-record": "Inspection complete record",
-  "/smart-pkr-inspection-record/inspection-action": "Inspection Action",
+  // "/smart-pkr-inspection-record/inspection-action": "Inspection Action",
 };
 
 function Title() {

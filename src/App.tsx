@@ -110,10 +110,10 @@ function App() {
                   path="/smart-pkr-inspection-record/complete-record"
                   element={<InspectionCompleteRecord />}
                 />
-                <Route
+                {/* <Route
                   path="/smart-pkr-inspection-record/inspection-action"
                   element={<InspectionAction />}
-                />
+                /> */}
               </Route>
             </Routes>
           </Suspense>
